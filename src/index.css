@@ -1,12 +1,82 @@
 @import "tailwindcss";
 
-/* Colores provisionales: reemplazar por los de la guía visual del Figma */
-/*confirmar con valeturra */
+/* Guía visual del equipo (documento de UX) */
 @theme {
   --color-primario: #2563eb;
   --color-primario-oscuro: #1d4ed8;
+  --color-acento: #be185d;
+  --color-fondo: #fff7fa;
+  --color-rosa-suave: #fce7f3;
+  --color-azul-suave: #dbeafe;
+  --color-azul-claro: #eff6ff;
+  --color-lila-suave: #e9d5ff;
+  --color-azul-texto: #1e3a8a;
   --color-texto: #1e293b;
   --color-texto-suave: #475569;
-  --color-acento: #be185d;
-  --color-borde: #cbd5e1;
+  --color-borde: #64748b;
+  --color-borde-tarjeta: #f9cfe3;
+  --color-error: #b91c1c;
+  --color-error-fondo: #fef2f2;
+  --color-exito: #166534;
+  --color-exito-fondo: #f0fdf4;
+  --color-aviso: #92400e;
+  --color-aviso-fondo: #fffbeb;
+
+  --font-titulo: "Lexend", system-ui, sans-serif;
+  --font-texto: "Atkinson Hyperlegible", system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-texto);
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-texto);
+    background: var(--color-fondo);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-titulo);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+  h2 {
+    font-size: 1.75rem;
+  }
+  h3 {
+    font-size: 1.25rem;
+  }
+
+  @media (min-width: 641px) {
+    h1 {
+      font-size: 3rem;
+    }
+  }
+}
+
+/* Única animación del producto: flotar. Se desactiva con «reducir movimiento» */
+@keyframes flotar {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.flotar {
+  animation: flotar 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flotar {
+    animation: none;
+  }
 }
