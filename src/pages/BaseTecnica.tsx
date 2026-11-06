@@ -1,8 +1,9 @@
 import { Cargando, MensajeError, MensajeExito } from '../components/common/Estados'
 import { useApiGet } from '../hooks/useApiGet'
+import type { PruebasRespuesta } from '../types/prueba'
 
 export function BaseTecnica() {
-  const { resultado, reintentar } = useApiGet<unknown>('/api/pruebas')
+  const { resultado, reintentar } = useApiGet<PruebasRespuesta>('/api/pruebas')
 
   return (
     <section className="mx-auto max-w-3xl px-4 py-12">
@@ -20,22 +21,42 @@ export function BaseTecnica() {
           <MensajeError mensaje={resultado.mensaje} onReintentar={reintentar} />
         )}
 
-        {resultado.estado === 'exito' && (
-          <>
-            {Array.isArray(resultado.datos) && resultado.datos.length === 0 ? (
-              <p className="rounded-xl border border-borde bg-white p-4 text-texto-suave">
-                La colección «pruebas» no tiene documentos.
-              </p>
-            ) : (
-              <>
-                <MensajeExito>Datos recibidos desde Firestore a través de la API.</MensajeExito>
-                <pre className="overflow-x-auto rounded-xl border border-borde bg-white p-4 text-sm">
-                  {JSON.stringify(resultado.datos, null, 2)}
-                </pre>
-              </>
-            )}
-          </>
+        {resultado.estado === 'exito' && !Array.isArray(resultado.datos.data) && (
+          <MensajeError
+            mensaje="La respuesta del servidor no tiene el formato esperado."
+            onReintentar={reintentar}
+          />
         )}
+
+        {resultado.estado === 'exito' &&
+          Array.isArray(resultado.datos.data) &&
+          resultado.datos.data.length === 0 && (
+            <p className="rounded-xl border border-borde bg-white p-4 text-texto-suave">
+              La colección «pruebas» no tiene documentos.
+            </p>
+          )}
+
+        {resultado.estado === 'exito' &&
+          Array.isArray(resultado.datos.data) &&
+          resultado.datos.data.length > 0 && (
+            <>
+              <MensajeExito>Datos recibidos desde Firestore a través de la API.</MensajeExito>
+              <ul className="space-y-3">
+                {resultado.datos.data.map((documento) => (
+                  <li
+                    key={documento.id}
+                    className="rounded-xl border border-borde bg-white p-4 shadow-sm"
+                  >
+                    <h2 className="text-lg font-bold">{documento.nombre}</h2>
+                    <p className="mt-1">{documento.mensaje}</p>
+                    <p className="mt-2 text-sm text-texto-suave">
+                      Estado: {documento.estado} · ID del documento: {documento.id}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
       </div>
     </section>
   )
