@@ -2,7 +2,7 @@
 
 Interfaz web del Mini Proyecto 2 (Proyecto Integrador). Se comunica con el Backend API; nunca consulta Firestore directamente.
 
-**Producción:** [PEGAR URL]
+**Producción:** [https://frontend-mp2-delta.vercel.app]
 
 ## Tecnologías
 
