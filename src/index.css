@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+/* Colores provisionales: reemplazar por los de la guía visual del Figma */
+/*confirmar con valeturra */
+@theme {
+  --color-primario: #2563eb;
+  --color-primario-oscuro: #1d4ed8;
+  --color-texto: #1e293b;
+  --color-texto-suave: #475569;
+  --color-acento: #be185d;
+  --color-borde: #cbd5e1;
+}
