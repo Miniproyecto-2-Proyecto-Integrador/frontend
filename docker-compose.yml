@@ -1,0 +1,9 @@
+services:
+  frontend:
+    build:
+      context: .
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+        VITE_REALTIME_URL: ${VITE_REALTIME_URL}
+    ports:
+      - "8080:80"
