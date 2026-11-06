@@ -1,13 +1,19 @@
 import { Book } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
+import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 import { Encabezado } from './Encabezado'
+import { SkipLink } from './SkipLink'
 
 const enlace =
   'inline-flex min-h-11 items-center text-base font-bold text-azul-texto underline underline-offset-4 hover:text-primario'
 
 export function Layout() {
+  useDocumentTitle()
+
   return (
     <div className="relative isolate flex min-h-screen flex-col">
+      <SkipLink />
+
       {/* Fondo «aurora»: solo decoración, nunca lleva texto encima */}
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute -left-24 top-0 size-96 rounded-full bg-rosa-suave blur-3xl" />
@@ -17,7 +23,7 @@ export function Layout() {
 
       <Encabezado />
 
-      <main id="contenido" className="flex-1">
+      <main id="contenido" tabIndex={-1} className="flex-1 focus:outline-none">
         <Outlet />
       </main>
 
