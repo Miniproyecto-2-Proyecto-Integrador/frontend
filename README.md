@@ -1,75 +1,70 @@
-# React + TypeScript + Vite
+# Frontend — Salón de Estudio Colaborativo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interfaz web del Mini Proyecto 2 (Proyecto Integrador). Se comunica con el Backend API; nunca consulta Firestore directamente.
 
-Currently, two official plugins are available:
+**Producción:** [PEGAR URL]
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tecnologías
 
-## React Compiler
+React, TypeScript, Vite, Tailwind CSS, React Router. Despliegue en Vercel.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Requisitos
 
-## Expanding the ESLint configuration
+- Node.js 22 o superior y npm
+- Docker (opcional, para ejecutar con contenedor)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Variables de entorno
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Copia `.env.example` a `.env` y completa los valores:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+| Variable | Descripción |
+|---|---|
+| `VITE_API_URL` | URL del Backend API (Render) |
+| `VITE_REALTIME_URL` | URL del Backend Realtime (Render) |
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+No se suben credenciales ni claves privadas al repositorio.
 
+## Ejecución en desarrollo
+
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+La aplicación abre en `http://localhost:5173`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Compilación
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm run build
+npm run lint
 ```
+
+## Ejecución con Docker
+
+Con el archivo `.env` creado:
+
+```bash
+docker compose up --build
+```
+
+La aplicación queda en `http://localhost:8080`.
+
+## Estructura
+
+```text
+src/
+├── components/   # common (reutilizables) y layout
+├── pages/        # vistas
+├── services/     # api, auth, realtime
+├── hooks/  contexts/  types/  utils/
+```
+
+## Servicios relacionados
+
+- Backend API: https://backend-api-02pq.onrender.com (Swagger: `/api-docs`)
+- Backend Realtime: https://backend-realtime-enj6.onrender.com
+
+## Flujo de trabajo en Git
+
+Una rama por historia (por ejemplo `feature/TS-00-docker-readme`), commits con mensajes claros y un pull request por historia hacia `main`.
