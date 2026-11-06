@@ -6,6 +6,9 @@ export function Ingreso() {
 export function Registro() {
   return <PaginaPendiente titulo="Crear cuenta" />
 }
+export function ElegirUsuario() {
+  return <PaginaPendiente titulo="Elegir nombre de usuario" />
+}
 export function Panel() {
   return <PaginaPendiente titulo="Panel" />
 }

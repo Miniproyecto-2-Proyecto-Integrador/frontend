@@ -6,6 +6,7 @@ import { NoEncontrada } from './pages/NoEncontrada'
 import {
   Accesibilidad,
   Ayuda,
+  ElegirUsuario,
   Ingreso,
   Panel,
   Perfil,
@@ -19,9 +20,10 @@ export default function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Inicio />} />
-          <Route path="ingreso" element={<Ingreso />} />
+          <Route path="ingresar" element={<Ingreso />} />
           <Route path="registro" element={<Registro />} />
-          <Route path="panel" element={<Panel />} />
+          <Route path="registro/usuario" element={<ElegirUsuario />} />
+          <Route path="dashboard" element={<Panel />} />
           <Route path="perfil" element={<Perfil />} />
           <Route path="salas/:id" element={<Sala />} />
           <Route path="base-tecnica" element={<BaseTecnica />} />
