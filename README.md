@@ -92,6 +92,22 @@ npm run lint
 node --test tests/*.test.mjs
 ```
 
+## Metadatos y rastreo
+
+El HTML inicial incluye título y descripción generales. El hook existente
+actualiza título, descripción y robots por ruta sin duplicar etiquetas.
+Inicio es indexable; autenticación, rutas privadas, Base técnica y las páginas
+provisionales de Ayuda/Accesibilidad usan noindex. Las rutas desconocidas
+también usan noindex después del renderizado.
+
+`public/robots.txt` permite rastreo y Vite lo copia a `dist/robots.txt`.
+Vercel añade X-Robots-Tag a las rutas excluidas, sin aplicarlo a Inicio.
+Se conserva el fallback SPA. Ejecuta el build antes de la suite completa:
+las pruebas SEO verifican los archivos generados en dist.
+
+Cambios, política y comprobaciones pendientes de producción:
+[SEO y Lighthouse](docs/SEO.md). No se garantiza una puntuación concreta.
+
 ## Ejecución con Docker
 
 Con el archivo `.env` creado:
