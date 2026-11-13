@@ -1,13 +1,14 @@
 import { Book, Menu, X } from 'lucide-react'
 import { useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { ButtonLink } from '../common/Button'
 
 const enlace =
   'inline-flex min-h-11 items-center text-base font-bold text-azul-texto underline underline-offset-4 hover:text-primario'
 
 export function Encabezado() {
+  const enRegistro = useLocation().pathname === '/registro'
   const [abierto, setAbierto] = useState(false)
   const botonRef = useRef<HTMLButtonElement>(null)
 
@@ -40,7 +41,7 @@ export function Encabezado() {
           <ButtonLink to="/ingresar" variante="secundario">
             Iniciar sesión
           </ButtonLink>
-          <ButtonLink to="/registro">Crear cuenta</ButtonLink>
+          <ButtonLink to="/registro" variante={enRegistro ? 'secundario' : 'primario'}>Crear cuenta</ButtonLink>
         </nav>
 
         <button
@@ -78,7 +79,7 @@ export function Encabezado() {
             </ButtonLink>
           </li>
           <li className="flex w-full">
-            <ButtonLink to="/registro" className="w-full" onClick={cerrar}>
+            <ButtonLink to="/registro" variante={enRegistro ? 'secundario' : 'primario'} className="w-full" onClick={cerrar}>
               Crear cuenta
             </ButtonLink>
           </li>
