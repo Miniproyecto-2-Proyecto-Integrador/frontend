@@ -1,6 +1,6 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, Navigate, useLocation } from 'react-router-dom'
 import { FirebaseError } from 'firebase/app'
 import { createUserWithEmailAndPassword, signOut } from 'firebase/auth'
 import { CampoFormulario } from '../components/auth/CampoFormulario'
@@ -17,6 +17,7 @@ import type { DatosRegistro, ErroresRegistro } from '../services/validarRegistro
 import { confirmarPasoFinal, formularioInicial, nombresPasos, reducirFormulario, validarPaso } from '../services/asistenteRegistro'
 import type { PasoRegistro } from '../services/asistenteRegistro'
 import { esUsuarioGoogle } from '../services/googleAuth'
+import { destinoDelEstado } from '../services/destinoSeguro'
 
 export function ContadorPaso({ actual, total }: { actual: PasoRegistro; total: 1 | 2 }) {
   return <p className="whitespace-nowrap pt-1 font-bold text-azul-texto">{total === 1 ? 'Completar perfil' : `Paso ${actual} de ${total}`}</p>
@@ -49,6 +50,7 @@ function mensajeError(error: unknown) {
 }
 
 export function Registro() {
+  const destino = destinoDelEstado(useLocation().state)
   const { usuario, estado, error: errorSesion, actualizarPerfil, cerrarSesion, googleActivo } = useAuth()
   const [{ datos, errores, paso }, dispatch] = useReducer(reducirFormulario, formularioInicial)
   const [mensaje, setMensaje] = useState('')
@@ -243,8 +245,8 @@ export function Registro() {
   }
 
   if (esUsuarioGoogle(usuario) && !ocupado) {
-    if (estado === 'completo') return <Navigate to="/dashboard" replace />
-    if (estado === 'pendiente') return <Navigate to="/registro/usuario" replace />
+    if (estado === 'completo') return <Navigate to={destino} replace />
+    if (estado === 'pendiente') return <Navigate to="/registro/usuario" state={{ from: destino }} replace />
   }
 
   if ((estado === 'completo' && !enviando) || cerrandoSesion) return <section className="mx-auto max-w-2xl px-4 py-12" aria-busy={cerrandoSesion}>
@@ -252,7 +254,7 @@ export function Registro() {
     {cerrandoSesion && <div className="mt-4"><Cargando detalle="Estamos cerrando tu sesión." /></div>}
     {errorCierre && <div ref={alertaCierre} tabIndex={-1} role="alert" className="mt-4 rounded-xl bg-error-fondo p-4 text-error">{errorCierre}</div>}
     <div className="mt-6 flex flex-wrap gap-3">
-      {cerrandoSesion ? <Button disabled>Ir al Panel</Button> : <ButtonLink to="/dashboard">Ir al Panel</ButtonLink>}
+      {cerrandoSesion ? <Button disabled>Ir al Panel</Button> : <ButtonLink to={destino}>{destino === '/dashboard' ? 'Ir al Panel' : 'Continuar'}</ButtonLink>}
       <Button variante="secundario" onClick={() => void cerrarSesionCompleta()} disabled={cerrandoSesion}>
         {cerrandoSesion ? 'Cerrando sesión…' : 'Cerrar sesión'}
       </Button>
@@ -260,8 +262,8 @@ export function Registro() {
   </section>
 
   return <section className="mx-auto max-w-2xl px-4 py-12">
-    <h1>Crear cuenta</h1>
-    <p className="mt-3 text-lg text-texto-suave">Prepárate para estudiar y compartir con tus compañeros.</p>
+    <h1 className="text-center">Crear cuenta</h1>
+    <p className="mt-3 text-center text-lg text-texto-suave">Prepárate para estudiar y compartir con tus compañeros.</p>
     <Tarjeta className="mt-6">
       <div className="mb-6 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
         <h2 ref={tituloPaso} tabIndex={-1} className="min-w-0 break-words">{nombresPasos[pasoActual - 1]}</h2>

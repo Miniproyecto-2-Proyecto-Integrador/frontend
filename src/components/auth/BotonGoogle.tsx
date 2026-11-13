@@ -3,9 +3,9 @@ import { Button } from '../common/Button'
 import { Cargando } from '../common/Estados'
 
 export function BotonGoogle({ disabled = false }: { disabled?: boolean }) {
-  const { ingresarConGoogle, googleActivo, avisoGoogle } = useAuth()
+  const { ingresarConGoogle, googleActivo, avisoGoogle, correoActivo, cerrandoSesion } = useAuth()
   return <div className="space-y-3">
-    <Button type="button" variante="secundario" className="w-full" disabled={disabled || googleActivo}
+    <Button type="button" variante="secundario" className="w-full" disabled={disabled || googleActivo || correoActivo || cerrandoSesion}
       onClick={() => void ingresarConGoogle()}>
       <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="20" height="20" className="shrink-0">
         <path fill="#4285F4" d="M21.6 12.23c0-.71-.06-1.39-.18-2.05H12v3.88h5.38a4.6 4.6 0 0 1-1.99 3.02v2.51h3.23c1.89-1.74 2.98-4.3 2.98-7.36Z" />

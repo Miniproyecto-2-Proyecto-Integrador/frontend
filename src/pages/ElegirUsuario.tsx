@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import type { User } from 'firebase/auth'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/auth'
 import { CampoFormulario } from '../components/auth/CampoFormulario'
 import { SelectorAvatar } from '../components/auth/SelectorAvatar'
@@ -15,20 +15,23 @@ import { finalizarPerfil } from '../services/finalizarPerfil'
 import { formularioInicial, reducirFormulario } from '../services/asistenteRegistro'
 import { validarRegistro } from '../services/validarRegistro'
 import type { ErroresRegistro } from '../services/validarRegistro'
+import { destinoDelEstado } from '../services/destinoSeguro'
 
 export function ElegirUsuario() {
+  const destino = destinoDelEstado(useLocation().state)
   const { usuario, estado, error } = useAuth()
   if (!usuario) {
     if (estado === 'cargando') return <Cargando detalle="Estamos restaurando tu sesión." />
     if (estado === 'error') return <MensajeError mensaje={error} onReintentar={() => window.location.reload()} />
-    return <Navigate to="/ingresar" replace />
+    return <Navigate to="/ingresar" state={{ from: destino }} replace />
   }
-  if (!esUsuarioGoogle(usuario)) return <Navigate to="/registro" replace />
+  if (!esUsuarioGoogle(usuario)) return <Navigate to="/registro" state={{ from: destino }} replace />
   // La clave evita conservar datos de otra cuenta; la carga del perfil no desmonta el formulario.
   return <FormularioPerfilGoogle key={usuario.uid} usuario={usuario} />
 }
 
 function FormularioPerfilGoogle({ usuario }: { usuario: User }) {
+  const destino = destinoDelEstado(useLocation().state)
   const { estado, error, actualizarPerfil, cerrarSesion, googleActivo } = useAuth()
   const [{ datos, errores }, dispatch] = useReducer(reducirFormulario, formularioInicial)
   const [ocupado, setOcupado] = useState(false)
@@ -111,7 +114,7 @@ function FormularioPerfilGoogle({ usuario }: { usuario: User }) {
     } finally { bloqueo.current = false; setOcupado(false) }
   }
 
-  if (estado === 'completo' && !ocupado) return <Navigate to="/dashboard" replace />
+  if (estado === 'completo' && !ocupado) return <Navigate to={destino} replace />
 
   return <section className="mx-auto max-w-2xl px-4 py-12">
     <h1 ref={titulo} tabIndex={-1}>Completar perfil</h1>

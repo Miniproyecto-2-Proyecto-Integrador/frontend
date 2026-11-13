@@ -2,12 +2,17 @@ import { Book, Menu, X } from 'lucide-react'
 import { useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { ButtonLink } from '../common/Button'
+import { Button, ButtonLink } from '../common/Button'
+import { useAuth } from '../../context/auth'
 
 const enlace =
   'inline-flex min-h-11 items-center text-base font-bold text-azul-texto underline underline-offset-4 hover:text-primario'
 
-export function Encabezado() {
+export function Encabezado({ onCerrarSesion, cerrando = false }: {
+  onCerrarSesion: (activador: HTMLButtonElement) => void; cerrando?: boolean
+}) {
+  const { estado, usuario, googleActivo, correoActivo, cerrandoSesion } = useAuth()
+  const autenticado = estado === 'completo' && !!usuario
   const enRegistro = useLocation().pathname === '/registro'
   const [abierto, setAbierto] = useState(false)
   const botonRef = useRef<HTMLButtonElement>(null)
@@ -24,7 +29,7 @@ export function Encabezado() {
   return (
     <header onKeyDown={alTeclear} className="border-b border-borde-tarjeta bg-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
-        <Link to="/" className="inline-flex min-h-11 items-center gap-2 font-titulo font-bold text-texto">
+        <Link to={autenticado ? '/dashboard' : '/'} className="inline-flex min-h-11 items-center gap-2 font-titulo font-bold text-texto">
           <span className="flex size-9 items-center justify-center rounded-full bg-azul-suave text-azul-texto">
             <Book aria-hidden="true" size={20} />
           </span>
@@ -32,6 +37,12 @@ export function Encabezado() {
         </Link>
 
         <nav aria-label="Navegación principal" className="hidden flex-wrap items-center gap-4 sm:flex">
+          {autenticado ? <>
+            <NavLink to="/dashboard" className={enlace}>Panel</NavLink>
+            <NavLink to="/perfil" className={enlace}>Mi perfil</NavLink>
+            <NavLink to="/ayuda" className={enlace}>Ayuda</NavLink>
+            <Button variante="secundario" disabled={cerrando || cerrandoSesion || googleActivo || correoActivo} onClick={e => onCerrarSesion(e.currentTarget)}>Cerrar sesión</Button>
+          </> : <>
           <NavLink to="/base-tecnica" className={enlace}>
             Base técnica
           </NavLink>
@@ -42,6 +53,7 @@ export function Encabezado() {
             Iniciar sesión
           </ButtonLink>
           <ButtonLink to="/registro" variante={enRegistro ? 'secundario' : 'primario'}>Crear cuenta</ButtonLink>
+          </>}
         </nav>
 
         <button
@@ -63,6 +75,12 @@ export function Encabezado() {
         className={abierto ? 'border-t border-borde-tarjeta px-4 pb-4 sm:hidden' : 'hidden'}
       >
         <ul className="flex flex-col items-start gap-1 pt-2">
+          {autenticado ? <>
+            <li><NavLink to="/dashboard" onClick={cerrar} className={enlace}>Panel</NavLink></li>
+            <li><NavLink to="/perfil" onClick={cerrar} className={enlace}>Mi perfil</NavLink></li>
+            <li><NavLink to="/ayuda" onClick={cerrar} className={enlace}>Ayuda</NavLink></li>
+            <li><Button variante="secundario" disabled={cerrando || cerrandoSesion || googleActivo || correoActivo} onClick={e => onCerrarSesion(e.currentTarget)}>Cerrar sesión</Button></li>
+          </> : <>
           <li>
             <NavLink to="/base-tecnica" onClick={cerrar} className={enlace}>
               Base técnica
@@ -83,6 +101,7 @@ export function Encabezado() {
               Crear cuenta
             </ButtonLink>
           </li>
+          </>}
         </ul>
       </nav>
     </header>

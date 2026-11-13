@@ -1,8 +1,4 @@
-const estilos = [
-  'from-rosa-suave to-lila-suave', 'from-azul-suave to-lila-suave',
-  'from-rosa-suave to-azul-suave', 'from-lila-suave to-rosa-suave',
-  'from-azul-claro to-azul-suave', 'from-lila-suave to-azul-claro',
-]
+import { estilosAvatar } from '../../services/avatares'
 
 export function SelectorAvatar({ valor, onChange, error, disabled }: {
   valor: string; onChange: (valor: string) => void; error?: string; disabled: boolean
@@ -10,7 +6,7 @@ export function SelectorAvatar({ valor, onChange, error, disabled }: {
   return <fieldset disabled={disabled} aria-describedby={error ? 'avatar-error' : undefined}>
     <legend className="mb-2 font-bold">Avatar</legend>
     <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
-      {estilos.map((estilo, i) => <label key={i} className="cursor-pointer text-center">
+      {estilosAvatar.map((estilo, i) => <label key={i} className="cursor-pointer text-center">
         <input className="peer sr-only" type="radio" name="avatar" value={`avatar${i + 1}`}
           checked={valor === `avatar${i + 1}`} onChange={e => onChange(e.target.value)} aria-invalid={error ? true : undefined}
           aria-describedby={error ? 'avatar-error' : undefined} />
