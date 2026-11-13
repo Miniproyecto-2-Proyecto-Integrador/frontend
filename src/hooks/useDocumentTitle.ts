@@ -5,7 +5,7 @@ const titulos: Record<string, string> = {
   '/': 'Inicio',
   '/ingresar': 'Iniciar sesión',
   '/registro': 'Crear cuenta',
-  '/registro/usuario': 'Elegir nombre de usuario',
+  '/registro/usuario': 'Completar perfil',
   '/dashboard': 'Panel',
   '/perfil': 'Mi perfil',
   '/base-tecnica': 'Base técnica',

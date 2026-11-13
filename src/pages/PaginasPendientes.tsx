@@ -1,8 +1,5 @@
 import { PaginaPendiente } from '../components/common/PaginaPendiente'
 
-export function Ingreso() {
-  return <PaginaPendiente titulo="Iniciar sesión" />
-}
 export function Registro() {
   return <PaginaPendiente titulo="Crear cuenta" />
 }

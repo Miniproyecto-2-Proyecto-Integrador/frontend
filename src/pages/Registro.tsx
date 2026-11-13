@@ -1,6 +1,6 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { FirebaseError } from 'firebase/app'
 import { createUserWithEmailAndPassword, signOut } from 'firebase/auth'
 import { CampoFormulario } from '../components/auth/CampoFormulario'
@@ -16,6 +16,7 @@ import { validarRegistro } from '../services/validarRegistro'
 import type { DatosRegistro, ErroresRegistro } from '../services/validarRegistro'
 import { confirmarPasoFinal, formularioInicial, nombresPasos, reducirFormulario, validarPaso } from '../services/asistenteRegistro'
 import type { PasoRegistro } from '../services/asistenteRegistro'
+import { esUsuarioGoogle } from '../services/googleAuth'
 
 export function ContadorPaso({ actual, total }: { actual: PasoRegistro; total: 1 | 2 }) {
   return <p className="whitespace-nowrap pt-1 font-bold text-azul-texto">{total === 1 ? 'Completar perfil' : `Paso ${actual} de ${total}`}</p>
@@ -48,7 +49,7 @@ function mensajeError(error: unknown) {
 }
 
 export function Registro() {
-  const { usuario, estado, error: errorSesion, actualizarPerfil, cerrarSesion } = useAuth()
+  const { usuario, estado, error: errorSesion, actualizarPerfil, cerrarSesion, googleActivo } = useAuth()
   const [{ datos, errores, paso }, dispatch] = useReducer(reducirFormulario, formularioInicial)
   const [mensaje, setMensaje] = useState('')
   const [enviando, setEnviando] = useState(false)
@@ -76,7 +77,7 @@ export function Registro() {
   const pasoActual = Math.min(paso, totalPasos) as PasoRegistro
   const ultimoPaso = pasoActual === totalPasos
   const pasoAnterior = useRef({ paso: pasoActual, total: totalPasos })
-  const ocupado = enviando || cambiandoCuenta || reintentando || cerrandoSesion
+  const ocupado = enviando || cambiandoCuenta || reintentando || cerrandoSesion || googleActivo
   const envioBloqueado = ocupado || (estado !== 'sin-sesion' && estado !== 'pendiente')
 
   useEffect(() => {
@@ -239,6 +240,11 @@ export function Registro() {
       bloqueo.current = false
       setCerrandoSesion(false)
     }
+  }
+
+  if (esUsuarioGoogle(usuario) && !ocupado) {
+    if (estado === 'completo') return <Navigate to="/dashboard" replace />
+    if (estado === 'pendiente') return <Navigate to="/registro/usuario" replace />
   }
 
   if ((estado === 'completo' && !enviando) || cerrandoSesion) return <section className="mx-auto max-w-2xl px-4 py-12" aria-busy={cerrandoSesion}>
