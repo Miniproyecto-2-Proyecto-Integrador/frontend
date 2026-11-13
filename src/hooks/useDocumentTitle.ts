@@ -1,25 +1,11 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-
-const titulos: Record<string, string> = {
-  '/': 'Inicio',
-  '/ingresar': 'Iniciar sesión',
-  '/registro': 'Crear cuenta',
-  '/registro/usuario': 'Completar perfil',
-  '/dashboard': 'Panel',
-  '/perfil': 'Mi perfil',
-  '/base-tecnica': 'Base técnica',
-  '/ayuda': 'Ayuda',
-  '/accesibilidad': 'Declaración de accesibilidad',
-}
+import { aplicarMetadatos } from '../services/metadatos'
 
 export function useDocumentTitle() {
   const { pathname } = useLocation()
 
   useEffect(() => {
-    const nombre = pathname.startsWith('/salas/')
-      ? 'Sala'
-      : (titulos[pathname] ?? 'Página no encontrada')
-    document.title = `${nombre} · Salón de Estudio`
+    aplicarMetadatos(pathname)
   }, [pathname])
 }
