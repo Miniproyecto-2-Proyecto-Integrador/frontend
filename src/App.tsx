@@ -4,14 +4,13 @@ import { BaseTecnica } from './pages/BaseTecnica'
 import { Inicio } from './pages/Inicio'
 import { NoEncontrada } from './pages/NoEncontrada'
 import { Registro } from './pages/Registro'
+import { Ingreso } from './pages/Ingreso'
+import { ElegirUsuario } from './pages/ElegirUsuario'
 import { AuthProvider } from './context/AuthProvider'
-import { RequierePerfil } from './components/auth/RequierePerfil'
+import { Panel } from './pages/Panel'
 import {
   Accesibilidad,
   Ayuda,
-  ElegirUsuario,
-  Ingreso,
-  Panel,
   Perfil,
   Sala,
 } from './pages/PaginasPendientes'
@@ -25,7 +24,7 @@ export default function App() {
           <Route path="ingresar" element={<Ingreso />} />
           <Route path="registro" element={<Registro />} />
           <Route path="registro/usuario" element={<ElegirUsuario />} />
-          <Route path="dashboard" element={<RequierePerfil><Panel /></RequierePerfil>} />
+          <Route path="dashboard" element={<Panel />} />
           <Route path="perfil" element={<Perfil />} />
           <Route path="salas/:id" element={<Sala />} />
           <Route path="base-tecnica" element={<BaseTecnica />} />

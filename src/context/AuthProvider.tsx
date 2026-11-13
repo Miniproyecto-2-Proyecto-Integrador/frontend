@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import type { User } from 'firebase/auth'
@@ -9,6 +9,8 @@ import { AuthContext } from './auth'
 import type { EstadoSesion } from './auth'
 import { ConsultaCanceladaError, crearConsultaCoordinada } from '../services/consultaCoordinada'
 import { confirmarCierreSesion } from '../services/confirmarCierreSesion'
+import { autenticarConGoogle, crearAccesoGoogle } from '../services/googleAuth'
+import type { AvisoGoogle } from '../services/googleAuth'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [usuario, setUsuario] = useState<User | null>(null)
@@ -17,6 +19,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState('')
   const cuenta = useRef<User | null>(null)
   const consultas = useRef(crearConsultaCoordinada<Perfil | null>())
+  const [googleActivo, setGoogleActivo] = useState(false)
+  const [avisoGoogle, setAvisoGoogle] = useState<AvisoGoogle | null>(null)
 
   const limpiarSesion = useCallback(() => {
     consultas.current.invalidar()
@@ -25,6 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setPerfil(null)
     setEstado('sin-sesion')
     setError('')
+    setAvisoGoogle(null)
   }, [])
 
   const cargar = useCallback(async (actual: User) => {
@@ -103,5 +108,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await confirmarCierreSesion(() => signOut(auth), () => auth.currentUser !== null, limpiarSesion)
   }
 
-  return <AuthContext.Provider value={{ usuario, perfil, estado, error, actualizarPerfil, cerrarSesion }}>{children}</AuthContext.Provider>
+  const ingresarConGoogle = useMemo(() => crearAccesoGoogle(autenticarConGoogle, cargar, {
+    iniciar: () => { setGoogleActivo(true); setAvisoGoogle(null) },
+    aviso: setAvisoGoogle,
+    finalizar: () => setGoogleActivo(false),
+  }), [cargar])
+
+  return <AuthContext.Provider value={{ usuario, perfil, estado, error, actualizarPerfil, cerrarSesion, ingresarConGoogle, googleActivo, avisoGoogle }}>{children}</AuthContext.Provider>
 }
