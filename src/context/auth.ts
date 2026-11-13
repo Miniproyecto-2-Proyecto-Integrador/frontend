@@ -11,6 +11,9 @@ export const AuthContext = createContext<{
   ingresarConGoogle: () => Promise<void>
   googleActivo: boolean
   avisoGoogle: AvisoGoogle | null
+  ingresarConCorreo: (correo: string, password: string) => Promise<void>
+  correoActivo: boolean
+  cerrandoSesion: boolean
 } | null>(null)
 
 export function useAuth() {

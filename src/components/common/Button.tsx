@@ -24,15 +24,17 @@ export function ButtonLink({
   className = '',
   onClick,
   children,
+  state,
 }: {
   to: string
   variante?: Variante
   className?: string
   onClick?: () => void
   children: ReactNode
+  state?: unknown
 }) {
   return (
-    <Link to={to} onClick={onClick} className={`${base} ${estilos[variante]} ${className}`}>
+    <Link to={to} state={state} onClick={onClick} className={`${base} ${estilos[variante]} ${className}`}>
       {children}
     </Link>
   )

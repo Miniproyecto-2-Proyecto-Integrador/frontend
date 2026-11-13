@@ -8,6 +8,7 @@ import { Ingreso } from './pages/Ingreso'
 import { ElegirUsuario } from './pages/ElegirUsuario'
 import { AuthProvider } from './context/AuthProvider'
 import { Panel } from './pages/Panel'
+import { RequierePerfil } from './components/auth/RequierePerfil'
 import {
   Accesibilidad,
   Ayuda,
@@ -25,8 +26,8 @@ export default function App() {
           <Route path="registro" element={<Registro />} />
           <Route path="registro/usuario" element={<ElegirUsuario />} />
           <Route path="dashboard" element={<Panel />} />
-          <Route path="perfil" element={<Perfil />} />
-          <Route path="salas/:id" element={<Sala />} />
+          <Route path="perfil" element={<RequierePerfil><Perfil /></RequierePerfil>} />
+          <Route path="salas/:id" element={<RequierePerfil><Sala /></RequierePerfil>} />
           <Route path="base-tecnica" element={<BaseTecnica />} />
           <Route path="ayuda" element={<Ayuda />} />
           <Route path="accesibilidad" element={<Accesibilidad />} />

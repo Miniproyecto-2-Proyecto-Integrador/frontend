@@ -35,14 +35,14 @@ Reinicia Vite después de cambiar el entorno. Las variables `VITE_...` son públ
 nunca incluyas Firebase Admin, cuentas de servicio o claves privadas.
 El frontend utiliza solo Firebase App y Auth; todos los perfiles pasan por la API.
 
-## Sprint 1 — US-01 y US-02
+## Sprint 1 — US-01, US-02 y US-03
 
 - `/registro`: registro manual en dos pasos.
 - `/registro/usuario`: completar el perfil de Google con nombres, apellidos,
   nombre de usuario y seis avatares, sin solicitar credenciales.
-- `/dashboard`: exige sesión y perfil confirmado; su contenido sigue provisional hasta US-03.
-- `/ingresar`: acceso mínimo con Google y logotipo local multicolor.
-  El formulario de inicio de sesión por correo/contraseña está pendiente de US-03.
+- `/dashboard`: exige sesión y perfil confirmado; saludo, avatar y estado vacío.
+- `/ingresar`: inicio con correo/contraseña y Google.
+- `/perfil` y `/salas/:id`: protegidas; contenido todavía provisional.
 - Inicio y Base técnica conservan sus funcionalidades.
 
 La cuenta se crea en Firebase y el perfil en `POST /api/usuarios`, con ID token.
@@ -58,8 +58,8 @@ Un 409 provoca una consulta para distinguir perfil existente de nombre ocupado.
 | Historia | Rama | PR |
 |---|---|---|
 | US-01 | `feature/US-01-registro-manual` | Integrada en main, commit 701d61c |
-| US-02 | `feature/US-02-google-auth` | Implementación local, sin publicar |
-| US-03 | Pendiente | Pendiente |
+| US-02 | `feature/US-02-google-auth` | Integrada en main, commit 3046386 |
+| US-03 | `feature/US-03-login` | Implementación local, sin commit |
 
 Pruebas, limitaciones y comparación UX: [registro US-01](docs/US-01.md).
 En /ingresar, Google utiliza popup iniciado por el clic; si ya existe perfil, redirige al
@@ -67,11 +67,13 @@ Panel. Un 404 dirige a completar perfil; errores de API permiten reintentar sin
 repetir el popup. Al recargar, Firebase restaura la sesión. No se divide
 displayName en nombres/apellidos ni se vinculan proveedores automáticamente.
 Se conserva el cierre mínimo de US-01 en /registro y se permite cambiar de cuenta
-desde la finalización. El Panel provisional también ofrece Cerrar sesión y
-vuelve a /registro tras confirmar el cierre del contexto.
-Inicio/cierre general, navegación autenticada, protección
-general de rutas y Panel vacío corresponden a US-03.
+desde la finalización. El encabezado autenticado ofrece Panel, Mi perfil, Ayuda y
+Cerrar sesión con diálogo de confirmación. El cierre global espera a Firebase y
+vuelve a Inicio con un mensaje accesible; sustituye el cierre provisional del Panel.
+Correo, Google y cierre comparten un bloqueo de concurrencia.
+El acceso devuelve a un destino privado interno permitido; nunca a un dominio externo.
 Flujo, pruebas y configuración de Google: [US-02](docs/US-02.md).
+Implementación, pruebas y verificaciones pendientes: [US-03](docs/US-03.md).
 
 ## Ejecución en desarrollo
 
@@ -87,6 +89,7 @@ La aplicación abre en `http://localhost:5173`.
 ```bash
 npm run build
 npm run lint
+node --test tests/*.test.mjs
 ```
 
 ## Ejecución con Docker

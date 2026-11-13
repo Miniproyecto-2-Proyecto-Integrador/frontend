@@ -11,6 +11,8 @@ import { ConsultaCanceladaError, crearConsultaCoordinada } from '../services/con
 import { confirmarCierreSesion } from '../services/confirmarCierreSesion'
 import { autenticarConGoogle, crearAccesoGoogle } from '../services/googleAuth'
 import type { AvisoGoogle } from '../services/googleAuth'
+import { accederConCorreo, autenticarConCorreo } from '../services/ingresoCorreo'
+import { crearExclusionAuth } from '../services/operacionAuth'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [usuario, setUsuario] = useState<User | null>(null)
@@ -21,6 +23,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const consultas = useRef(crearConsultaCoordinada<Perfil | null>())
   const [googleActivo, setGoogleActivo] = useState(false)
   const [avisoGoogle, setAvisoGoogle] = useState<AvisoGoogle | null>(null)
+  const [correoActivo, setCorreoActivo] = useState(false)
+  const [cerrandoSesion, setCerrandoSesion] = useState(false)
+  const excluir = useRef(crearExclusionAuth())
 
   const limpiarSesion = useCallback(() => {
     consultas.current.invalidar()
@@ -104,15 +109,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function cerrarSesion() {
-    const auth = obtenerAuth()
-    await confirmarCierreSesion(() => signOut(auth), () => auth.currentUser !== null, limpiarSesion)
+    await excluir.current(async () => {
+      setCerrandoSesion(true)
+      try {
+        const auth = obtenerAuth()
+        await confirmarCierreSesion(() => signOut(auth), () => auth.currentUser !== null, limpiarSesion)
+      } finally { setCerrandoSesion(false) }
+    })
   }
 
-  const ingresarConGoogle = useMemo(() => crearAccesoGoogle(autenticarConGoogle, cargar, {
+  const accesoGoogle = useMemo(() => crearAccesoGoogle(autenticarConGoogle, cargar, {
     iniciar: () => { setGoogleActivo(true); setAvisoGoogle(null) },
     aviso: setAvisoGoogle,
     finalizar: () => setGoogleActivo(false),
   }), [cargar])
 
-  return <AuthContext.Provider value={{ usuario, perfil, estado, error, actualizarPerfil, cerrarSesion, ingresarConGoogle, googleActivo, avisoGoogle }}>{children}</AuthContext.Provider>
+  async function ingresarConGoogle() {
+    // Un segundo clic no abre otro popup ni compite con el acceso por correo.
+    if (correoActivo || cerrandoSesion) return
+    try { await excluir.current(accesoGoogle) } catch { /* Ya hay una operación activa. */ }
+  }
+
+  async function ingresarConCorreo(correo: string, password: string) {
+    await excluir.current(async () => {
+      setCorreoActivo(true)
+      setAvisoGoogle(null)
+      try {
+        await accederConCorreo(correo, password, autenticarConCorreo, cargar)
+      } finally { setCorreoActivo(false) }
+    })
+  }
+
+  return <AuthContext.Provider value={{ usuario, perfil, estado, error, actualizarPerfil, cerrarSesion, ingresarConGoogle, googleActivo, avisoGoogle, ingresarConCorreo, correoActivo, cerrandoSesion }}>{children}</AuthContext.Provider>
 }

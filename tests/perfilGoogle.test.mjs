@@ -122,12 +122,14 @@ test('el logotipo Google es local y decorativo y el botón conserva su etiqueta'
   assert.doesNotMatch(html, /<img|<image|<title/)
 })
 
-test('ingresar es mínimo para Google, conserva acceso a registro y no solicita credenciales', () => {
+test('ingresar conserva Google y registro e incorpora correo y contraseña de US-03', () => {
   const html = renderizar(createElement(Ingreso), { estado: 'sin-sesion', usuario: null })
   assert.match(html, /Iniciar sesión/)
   assert.match(html, /href="\/registro"/)
   assert.match(html, /Crear cuenta/)
-  assert.doesNotMatch(html, /<input|<form/)
+  assert.match(html, /id="correo"/)
+  assert.match(html, /autoComplete="current-password"/)
+  assert.doesNotMatch(html, /autoComplete="new-password"/)
 })
 
 test('ingresar espera restauración y popup y solo resuelve destino con estado confirmado', () => {
