@@ -21,8 +21,46 @@ Copia `.env.example` a `.env` y completa los valores:
 |---|---|
 | `VITE_API_URL` | URL del Backend API (Render) |
 | `VITE_REALTIME_URL` | URL del Backend Realtime (Render) |
+| `VITE_FIREBASE_API_KEY` | API key pública de la aplicación web de Firebase |
+| `VITE_FIREBASE_AUTH_DOMAIN` | Dominio de autenticación de Firebase |
+| `VITE_FIREBASE_PROJECT_ID` | Proyecto Firebase, el mismo que utiliza la API |
+| `VITE_FIREBASE_APP_ID` | Identificador de la aplicación web |
 
 No se suben credenciales ni claves privadas al repositorio.
+
+La URL de API es el origen, sin agregar `/api`; por ejemplo `http://localhost:3000`.
+Obtén la configuración pública en la configuración de la aplicación web de Firebase.
+Habilita correo/contraseña en Authentication y comprueba los dominios autorizados.
+Reinicia Vite después de cambiar el entorno. Las variables `VITE_...` son públicas;
+nunca incluyas Firebase Admin, cuentas de servicio o claves privadas.
+El frontend utiliza solo Firebase App y Auth; todos los perfiles pasan por la API.
+
+## Sprint 1 — US-01
+
+- `/registro`: registro manual, validación accesible y seis avatares.
+- `/dashboard`: exige sesión y perfil confirmado; su contenido sigue provisional hasta US-03.
+- `/ingresar` y `/registro/usuario`: provisionales hasta US-03 y US-02, respectivamente.
+- Inicio y Base técnica conservan sus funcionalidades.
+
+La cuenta se crea en Firebase y el perfil en `POST /api/usuarios`, con ID token.
+La contraseña nunca se envía a la API. El SDK administra la persistencia de sesión;
+no guardamos tokens ni contraseñas en localStorage.
+Si falla el perfil, el reintento reutiliza la cuenta autenticada. Tras recargar,
+vuelve a `/registro`: se consulta el perfil y se solicitan los datos pendientes
+sin volver a pedir contraseña. Los datos de perfil sin guardar deben escribirse
+de nuevo; no se persisten formularios localmente.
+Solo 404 significa perfil pendiente; otros fallos permiten reintentar la consulta.
+Un 409 provoca una consulta para distinguir perfil existente de nombre ocupado.
+
+| Historia | Rama | PR |
+|---|---|---|
+| US-01 | `feature/US-01-registro-manual` | Pendiente de publicación autorizada |
+| US-02 | Pendiente | Pendiente |
+| US-03 | Pendiente | Pendiente |
+
+Pruebas, limitaciones y comparación UX: [registro US-01](docs/US-01.md).
+Google se incorporará en US-02. Inicio/cierre, navegación autenticada, protección
+general de rutas y Panel vacío corresponden a US-03.
 
 ## Ejecución en desarrollo
 
