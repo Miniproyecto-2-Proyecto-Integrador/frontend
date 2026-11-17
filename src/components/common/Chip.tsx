@@ -16,7 +16,7 @@ export function Chip({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-bold ${colores[color]}`}
+      className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-base font-bold ${colores[color]}`}
     >
       {icono}
       {children}

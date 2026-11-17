@@ -1,5 +1,4 @@
-import { Book } from 'lucide-react'
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useReducer, useRef } from 'react'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 import { Encabezado } from './Encabezado'
@@ -8,9 +7,6 @@ import { useAuth } from '../../context/auth'
 import { DialogoCerrarSesion } from '../auth/DialogoCerrarSesion'
 import { MensajeExito } from '../common/Estados'
 import { cierreInicial, reducirCierre } from '../../services/dialogoCierre'
-
-const enlace =
-  'inline-flex min-h-11 items-center text-base font-bold text-azul-texto underline underline-offset-4 hover:text-primario'
 
 export function Layout() {
   useDocumentTitle()
@@ -62,22 +58,7 @@ export function Layout() {
         <Outlet context={{ cierreEnCurso: cerrando }} />
       </main>
 
-      <footer className="border-t border-borde-tarjeta bg-white">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4">
-          <span className="inline-flex items-center gap-2 font-titulo font-bold text-azul-texto">
-            <Book aria-hidden="true" size={18} />
-            Salón de Estudio
-          </span>
-          <nav aria-label="Pie de página" className="flex flex-wrap gap-x-6">
-            <NavLink to="/accesibilidad" className={enlace}>
-              Declaración de accesibilidad
-            </NavLink>
-            <NavLink to="/ayuda" className={enlace}>
-              Ayuda
-            </NavLink>
-          </nav>
-        </div>
-      </footer>
+
     </div>
   )
 }

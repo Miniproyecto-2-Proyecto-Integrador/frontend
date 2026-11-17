@@ -1,3 +1,4 @@
+import { Eye, EyeOff } from 'lucide-react'
 import { useEffect, useReducer, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, Navigate, useLocation } from 'react-router-dom'
@@ -308,7 +309,7 @@ export function Registro() {
         {pasoActual === 2 && <>
           <CampoFormulario id="correo" etiqueta="Correo electrónico" type="email" autoComplete="email" required value={datos.correo} onChange={e => cambiar('correo', e.target.value)} error={errores.correo} disabled={enviando} />
           <CampoFormulario id="password" etiqueta="Contraseña" type={visible ? 'text' : 'password'} autoComplete="new-password" required value={datos.password} onChange={e => cambiar('password', e.target.value)} error={errores.password} ayuda="Al menos ocho caracteres, una letra y un número." disabled={enviando}>
-            <button type="button" aria-controls="password" aria-pressed={visible} onClick={() => setVisible(valor => !valor)} className="absolute inset-y-0 right-1 min-h-11 rounded-xl px-3 font-bold text-azul-texto" disabled={enviando}>{visible ? 'Ocultar' : 'Mostrar'}</button>
+            <button type="button" aria-controls="password" aria-pressed={visible} aria-label={visible ? 'Ocultar contraseña' : 'Mostrar contraseña'} onClick={() => setVisible(valor => !valor)} className="absolute inset-y-0 right-1 inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl px-3 text-azul-texto" disabled={enviando}>{visible ? <Eye aria-hidden="true" size={20} /> : <EyeOff aria-hidden="true" size={20} />}</button>
           </CampoFormulario>
         </>}
         {enviando && <Cargando detalle="Estamos guardando tu cuenta y comprobando tu perfil." />}

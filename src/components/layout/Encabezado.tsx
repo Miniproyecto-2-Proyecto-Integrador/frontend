@@ -1,4 +1,4 @@
-import { Book, Menu, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
@@ -28,33 +28,31 @@ export function Encabezado({ onCerrarSesion, cerrando = false }: {
 
   return (
     <header onKeyDown={alTeclear} className="border-b border-borde-tarjeta bg-white">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
-        <Link to={autenticado ? '/dashboard' : '/'} className="inline-flex min-h-11 items-center gap-2 font-titulo font-bold text-texto">
-          <span className="flex size-9 items-center justify-center rounded-full bg-azul-suave text-azul-texto">
-            <Book aria-hidden="true" size={20} />
-          </span>
-          Salón de Estudio
+      <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-4 px-4 py-4 lg:grid-cols-[1fr_auto_1fr]">
+        <Link to={autenticado ? '/dashboard' : '/'} className="inline-flex min-h-11 items-center gap-2 font-titulo text-2xl font-bold text-texto">
+          <img src="/favicon.png" alt="" width={36} height={36} className="size-9 shrink-0 object-contain" />
+          TertuliApp
         </Link>
 
-        <nav aria-label="Navegación principal" className="hidden flex-wrap items-center gap-4 sm:flex">
+        <nav aria-label="Navegación principal" className="hidden items-center justify-center gap-6 lg:flex">
           {autenticado ? <>
             <NavLink to="/dashboard" className={enlace}>Panel</NavLink>
             <NavLink to="/perfil" className={enlace}>Mi perfil</NavLink>
             <NavLink to="/ayuda" className={enlace}>Ayuda</NavLink>
-            <Button variante="secundario" disabled={cerrando || cerrandoSesion || googleActivo || correoActivo} onClick={e => onCerrarSesion(e.currentTarget)}>Cerrar sesión</Button>
           </> : <>
-          <NavLink to="/base-tecnica" className={enlace}>
-            Base técnica
-          </NavLink>
-          <NavLink to="/ayuda" className={enlace}>
-            Ayuda
-          </NavLink>
-          <ButtonLink to="/ingresar" variante="secundario">
-            Iniciar sesión
-          </ButtonLink>
-          <ButtonLink to="/registro" variante={enRegistro ? 'secundario' : 'primario'}>Crear cuenta</ButtonLink>
+            <NavLink to="/base-tecnica" className={enlace}>Base técnica</NavLink>
+            <NavLink to="/ayuda" className={enlace}>Ayuda</NavLink>
           </>}
         </nav>
+
+        <div className="hidden items-center justify-end gap-3 lg:flex">
+          {autenticado ? (
+            <Button variante="secundario" disabled={cerrando || cerrandoSesion || googleActivo || correoActivo} onClick={e => onCerrarSesion(e.currentTarget)}>Cerrar sesión</Button>
+          ) : <>
+            <ButtonLink to="/ingresar" variante="secundario">Iniciar sesión</ButtonLink>
+            <ButtonLink to="/registro" variante={enRegistro ? 'secundario' : 'primario'}>Crear cuenta</ButtonLink>
+          </>}
+        </div>
 
         <button
           ref={botonRef}
@@ -62,7 +60,7 @@ export function Encabezado({ onCerrarSesion, cerrando = false }: {
           aria-expanded={abierto}
           aria-controls="menu-movil"
           onClick={() => setAbierto((a) => !a)}
-          className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-primario bg-white px-4 font-bold text-primario sm:hidden"
+          className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-primario bg-white px-4 font-bold text-primario lg:hidden"
         >
           {abierto ? <X aria-hidden="true" size={20} /> : <Menu aria-hidden="true" size={20} />}
           Menú
@@ -72,7 +70,7 @@ export function Encabezado({ onCerrarSesion, cerrando = false }: {
       <nav
         id="menu-movil"
         aria-label="Navegación principal"
-        className={abierto ? 'border-t border-borde-tarjeta px-4 pb-4 sm:hidden' : 'hidden'}
+        className={abierto ? 'border-t border-borde-tarjeta px-4 pb-4 lg:hidden' : 'hidden'}
       >
         <ul className="flex flex-col items-start gap-1 pt-2">
           {autenticado ? <>
