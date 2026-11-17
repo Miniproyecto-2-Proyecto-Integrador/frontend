@@ -319,8 +319,12 @@ export function Registro() {
             ? <Button key="confirmar" type="submit" disabled={envioBloqueado} className="flex-1">{enviando ? 'Guardando…' : recuperando ? 'Completar registro' : 'Crear cuenta'}</Button>
             : <BotonSiguiente key="siguiente" disabled={envioBloqueado} avanzar={avanzar} />}
         </div>
-        <p className="text-texto-suave">¿Ya tienes cuenta? <Link to="/ingresar" className="font-bold text-azul-texto underline underline-offset-4">Iniciar sesión</Link></p>
       </form>
+      <hr className="my-6 border-borde-tarjeta" />
+      <p className="text-left text-texto-suave">
+        ¿Ya tienes cuenta?{' '}
+        <Link to="/ingresar" className="font-bold text-primario-oscuro underline underline-offset-4 hover:text-azul-texto">Iniciar sesión</Link>
+      </p>
     </Tarjeta>
   </section>
 }

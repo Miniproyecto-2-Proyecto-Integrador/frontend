@@ -1,10 +1,10 @@
 import { Eye, EyeOff } from 'lucide-react'
 import { useReducer, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
+import { Link, Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/auth'
 import { BotonGoogle } from '../components/auth/BotonGoogle'
-import { Button, ButtonLink } from '../components/common/Button'
+import { Button } from '../components/common/Button'
 import { Cargando } from '../components/common/Estados'
 import { Tarjeta } from '../components/common/Tarjeta'
 import { esUsuarioGoogle } from '../services/googleAuth'
@@ -99,10 +99,10 @@ export function Ingreso() {
       </form>
       <BotonGoogle disabled={ocupado || estado === 'cargando'} />
       <hr className="my-6 border-borde-tarjeta" />
-      <div className="text-center">
-        <p className="text-texto-suave">¿Todavía no tienes cuenta?</p>
-        <ButtonLink to="/registro" state={{ from: destino }} variante="secundario" className="mt-3">Crear cuenta</ButtonLink>
-      </div>
+      <p className="text-left text-texto-suave">
+        ¿Todavía no tienes cuenta?{' '}
+        <Link to="/registro" state={{ from: destino }} className="font-bold text-primario-oscuro underline underline-offset-4 hover:text-azul-texto">Crear cuenta</Link>
+      </p>
     </Tarjeta>
   </section>
 }
