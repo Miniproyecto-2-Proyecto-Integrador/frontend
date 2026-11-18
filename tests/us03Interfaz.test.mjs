@@ -47,7 +47,8 @@ test('Panel usa nombre y avatar del perfil y el texto vacío exacto, sin cierre 
   assert.match(html, /<h1>Salas<\/h1>/)
   assert.match(html, /Hola, Lucía\./)
   assert.match(html, /aria-label="Avatar 3"/)
-  assert.match(html, /Todavía no tienes salas\. Aquí las verás cuando las tengas/)
+  assert.match(html, /Crear sala/)
+  assert.match(html, /Estamos consultando tus salas/)
   assert.doesNotMatch(html, /Esta pantalla se implementará|Cerrar sesión/)
 })
 

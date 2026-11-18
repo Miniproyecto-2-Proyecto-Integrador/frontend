@@ -8,12 +8,12 @@ import { Ingreso } from './pages/Ingreso'
 import { ElegirUsuario } from './pages/ElegirUsuario'
 import { AuthProvider } from './context/AuthProvider'
 import { Panel } from './pages/Panel'
+import { Sala } from './pages/Sala'
 import { Perfil } from './pages/Perfil'
 import { RequierePerfil } from './components/auth/RequierePerfil'
 import {
   Accesibilidad,
   Ayuda,
-  Sala,
 } from './pages/PaginasPendientes'
 
 export default function App() {
