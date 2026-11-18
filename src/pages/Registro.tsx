@@ -6,7 +6,7 @@ import { FirebaseError } from 'firebase/app'
 import { createUserWithEmailAndPassword, signOut } from 'firebase/auth'
 import { CampoFormulario } from '../components/auth/CampoFormulario'
 import { SelectorAvatar } from '../components/auth/SelectorAvatar'
-import { Button, ButtonLink } from '../components/common/Button'
+import { Button } from '../components/common/Button'
 import { Cargando, MensajeExito } from '../components/common/Estados'
 import { Tarjeta } from '../components/common/Tarjeta'
 import { useAuth } from '../context/auth'
@@ -52,7 +52,7 @@ function mensajeError(error: unknown) {
 
 export function Registro() {
   const destino = destinoDelEstado(useLocation().state)
-  const { usuario, estado, error: errorSesion, actualizarPerfil, cerrarSesion, googleActivo } = useAuth()
+  const { usuario, estado, error: errorSesion, actualizarPerfil, googleActivo } = useAuth()
   const [{ datos, errores, paso }, dispatch] = useReducer(reducirFormulario, formularioInicial)
   const [mensaje, setMensaje] = useState('')
   const [enviando, setEnviando] = useState(false)
@@ -60,16 +60,12 @@ export function Registro() {
   const [reintentando, setReintentando] = useState(false)
   const [cambiandoCuenta, setCambiandoCuenta] = useState(false)
   const [avisoCuenta, setAvisoCuenta] = useState('')
-  const [cerrandoSesion, setCerrandoSesion] = useState(false)
-  const [errorCierre, setErrorCierre] = useState('')
-  const alertaCierre = useRef<HTMLDivElement>(null)
   const focoCuenta = useRef(false)
   const focoConsulta = useRef(false)
   const bloqueo = useRef(false)
   const formulario = useRef<HTMLFormElement>(null)
   const alerta = useRef<HTMLDivElement>(null)
   const reintentar = useRef<HTMLDivElement>(null)
-  const tituloExito = useRef<HTMLHeadingElement>(null)
   const tituloPaso = useRef<HTMLHeadingElement>(null)
   const campoConError = useRef<keyof DatosRegistro | null>(null)
   const sesionAlEnviar = useRef(false)
@@ -80,7 +76,7 @@ export function Registro() {
   const pasoActual = Math.min(paso, totalPasos) as PasoRegistro
   const ultimoPaso = pasoActual === totalPasos
   const pasoAnterior = useRef({ paso: pasoActual, total: totalPasos })
-  const ocupado = enviando || cambiandoCuenta || reintentando || cerrandoSesion || googleActivo
+  const ocupado = enviando || cambiandoCuenta || reintentando || googleActivo
   const envioBloqueado = ocupado || (estado !== 'sin-sesion' && estado !== 'pendiente')
 
   useEffect(() => {
@@ -98,21 +94,19 @@ export function Registro() {
   }, [pasoActual, totalPasos, errores])
 
   useEffect(() => {
-    if (focoCuenta.current && estado === 'sin-sesion' && !cambiandoCuenta && !cerrandoSesion) {
+    if (focoCuenta.current && estado === 'sin-sesion' && !cambiandoCuenta) {
       focoCuenta.current = false
       tituloPaso.current?.focus()
     }
-  }, [estado, cambiandoCuenta, cerrandoSesion])
+  }, [estado, cambiandoCuenta])
 
   useEffect(() => {
-    if (estado === 'completo' && !enviando) {
-      tituloExito.current?.focus()
-    } else if (focoConsulta.current && !reintentando) {
+    if (focoConsulta.current && !reintentando) {
       focoConsulta.current = false
       if (estado === 'error') reintentar.current?.querySelector<HTMLButtonElement>('button')?.focus()
       if (estado === 'pendiente') tituloPaso.current?.focus()
     }
-  }, [estado, enviando, reintentando])
+  }, [estado, reintentando])
 
   function cambiar(campo: keyof DatosRegistro, valor: string) {
     dispatch({ tipo: 'editar', campo, valor })
@@ -221,46 +215,11 @@ export function Registro() {
     }
   }
 
-  async function cerrarSesionCompleta() {
-    if (bloqueo.current) return
-    bloqueo.current = true
-    setCerrandoSesion(true)
-    setErrorCierre('')
-    try {
-      await cerrarSesion()
-      dispatch({ tipo: 'reiniciar' })
-      setVisible(false)
-      setMensaje('')
-      campoConError.current = null
-      focoConsulta.current = false
-      sesionAlEnviar.current = false
-      focoCuenta.current = true
-      setAvisoCuenta('Sesión cerrada. Puedes crear una nueva cuenta.')
-    } catch {
-      setErrorCierre('No pudimos cerrar la sesión. Vuelve a pulsar Cerrar sesión para reintentar.')
-      requestAnimationFrame(() => alertaCierre.current?.focus())
-    } finally {
-      bloqueo.current = false
-      setCerrandoSesion(false)
-    }
-  }
+  if (estado === 'completo' && !ocupado) return <Navigate to="/dashboard" replace />
 
-  if (esUsuarioGoogle(usuario) && !ocupado) {
-    if (estado === 'completo') return <Navigate to={destino} replace />
-    if (estado === 'pendiente') return <Navigate to="/registro/usuario" state={{ from: destino }} replace />
+  if (esUsuarioGoogle(usuario) && !ocupado && estado === 'pendiente') {
+    return <Navigate to="/registro/usuario" state={{ from: destino }} replace />
   }
-
-  if ((estado === 'completo' && !enviando) || cerrandoSesion) return <section className="mx-auto max-w-2xl px-4 py-12" aria-busy={cerrandoSesion}>
-    <h1 ref={tituloExito} tabIndex={-1}>Crear cuenta</h1><div className="mt-6"><MensajeExito>Tu cuenta y tu perfil están listos.</MensajeExito></div>
-    {cerrandoSesion && <div className="mt-4"><Cargando detalle="Estamos cerrando tu sesión." /></div>}
-    {errorCierre && <div ref={alertaCierre} tabIndex={-1} role="alert" className="mt-4 rounded-xl bg-error-fondo p-4 text-error">{errorCierre}</div>}
-    <div className="mt-6 flex flex-wrap gap-3">
-      {cerrandoSesion ? <Button disabled>Ir al Panel</Button> : <ButtonLink to={destino}>{destino === '/dashboard' ? 'Ir al Panel' : 'Continuar'}</ButtonLink>}
-      <Button variante="secundario" onClick={() => void cerrarSesionCompleta()} disabled={cerrandoSesion}>
-        {cerrandoSesion ? 'Cerrando sesión…' : 'Cerrar sesión'}
-      </Button>
-    </div>
-  </section>
 
   return <section className="mx-auto max-w-2xl px-4 py-12">
     <h1 className="text-center">Crear cuenta</h1>

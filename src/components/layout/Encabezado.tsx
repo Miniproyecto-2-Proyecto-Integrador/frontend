@@ -1,9 +1,9 @@
 import { Menu, X } from 'lucide-react'
-import { useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
+import { useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { Button, ButtonLink } from '../common/Button'
 import { useAuth } from '../../context/auth'
+import { Button, ButtonLink } from '../common/Button'
 
 const enlace =
   'inline-flex min-h-11 items-center text-base font-bold text-azul-texto underline underline-offset-4 hover:text-primario'
@@ -11,7 +11,7 @@ const enlace =
 export function Encabezado({ onCerrarSesion, cerrando = false }: {
   onCerrarSesion: (activador: HTMLButtonElement) => void; cerrando?: boolean
 }) {
-  const { estado, usuario, googleActivo, correoActivo, cerrandoSesion } = useAuth()
+  const { estado, usuario, googleActivo, correoActivo, cerrandoSesion, modificandoCuenta } = useAuth()
   const autenticado = estado === 'completo' && !!usuario
   const enRegistro = useLocation().pathname === '/registro'
   const [abierto, setAbierto] = useState(false)
@@ -29,14 +29,14 @@ export function Encabezado({ onCerrarSesion, cerrando = false }: {
   return (
     <header onKeyDown={alTeclear} className="border-b border-borde-tarjeta bg-white">
       <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-4 px-4 py-4 lg:grid-cols-[1fr_auto_1fr]">
-        <Link to={autenticado ? '/dashboard' : '/'} className="inline-flex min-h-11 items-center gap-2 font-titulo text-2xl font-bold text-texto">
+        <Link to={autenticado ? '/dashboard' : '/'} className="inline-flex min-h-11 items-center gap-2 font-titulo text-2xl font-bold text-texto sm:text-3xl">
           <img src="/favicon.png" alt="" width={36} height={36} className="size-9 shrink-0 object-contain" />
           TertuliApp
         </Link>
 
         <nav aria-label="Navegación principal" className="hidden items-center justify-center gap-6 lg:flex">
           {autenticado ? <>
-            <NavLink to="/dashboard" className={enlace}>Panel</NavLink>
+            <NavLink to="/dashboard" className={enlace}>Salas</NavLink>
             <NavLink to="/perfil" className={enlace}>Mi perfil</NavLink>
             <NavLink to="/ayuda" className={enlace}>Ayuda</NavLink>
           </> : <>
@@ -47,7 +47,7 @@ export function Encabezado({ onCerrarSesion, cerrando = false }: {
 
         <div className="hidden items-center justify-end gap-3 lg:flex">
           {autenticado ? (
-            <Button variante="secundario" disabled={cerrando || cerrandoSesion || googleActivo || correoActivo} onClick={e => onCerrarSesion(e.currentTarget)}>Cerrar sesión</Button>
+            <Button variante="secundario" disabled={cerrando || cerrandoSesion || googleActivo || correoActivo || modificandoCuenta} onClick={e => onCerrarSesion(e.currentTarget)}>Cerrar sesión</Button>
           ) : <>
             <ButtonLink to="/ingresar" variante="secundario">Iniciar sesión</ButtonLink>
             <ButtonLink to="/registro" variante={enRegistro ? 'secundario' : 'primario'}>Crear cuenta</ButtonLink>
@@ -74,10 +74,10 @@ export function Encabezado({ onCerrarSesion, cerrando = false }: {
       >
         <ul className="flex flex-col items-start gap-1 pt-2">
           {autenticado ? <>
-            <li><NavLink to="/dashboard" onClick={cerrar} className={enlace}>Panel</NavLink></li>
+            <li><NavLink to="/dashboard" onClick={cerrar} className={enlace}>Salas</NavLink></li>
             <li><NavLink to="/perfil" onClick={cerrar} className={enlace}>Mi perfil</NavLink></li>
             <li><NavLink to="/ayuda" onClick={cerrar} className={enlace}>Ayuda</NavLink></li>
-            <li><Button variante="secundario" disabled={cerrando || cerrandoSesion || googleActivo || correoActivo} onClick={e => onCerrarSesion(e.currentTarget)}>Cerrar sesión</Button></li>
+            <li><Button variante="secundario" disabled={cerrando || cerrandoSesion || googleActivo || correoActivo || modificandoCuenta} onClick={e => onCerrarSesion(e.currentTarget)}>Cerrar sesión</Button></li>
           </> : <>
           <li>
             <NavLink to="/base-tecnica" onClick={cerrar} className={enlace}>

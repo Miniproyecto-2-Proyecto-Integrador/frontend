@@ -32,12 +32,8 @@ test('error de consulta bloquea el envío y mantiene un reintento y el correo ac
   assert.match(html, /registro está bloqueado/)
 })
 
-test('el registro completo ofrece Cerrar sesión junto a Ir al Panel', () => {
-  const html = pantalla('completo')
-  assert.match(html, /Tu cuenta y tu perfil están listos/)
-  assert.match(html, /href="\/dashboard"[^>]*>Ir al Panel/)
-  assert.match(html, /<button[^>]*type="button"[^>]*>Cerrar sesión<\/button>/)
-  assert.doesNotMatch(html, /<form/)
+test('el registro completo redirige sin mostrar una pantalla de confirmación', () => {
+  assert.equal(pantalla('completo'), '')
 })
 
 test('tras el cierre confirmado y reinicio vuelve el formulario vacío del paso 1', async () => {
@@ -172,10 +168,10 @@ test('los errores de campo y avatar se asocian a sus controles', () => {
   assert.match(avatar, /checked="" value="avatar2"/)
 })
 
-test('solo 404 significa perfil inexistente; errores de consulta se propagan', async t => {
+test('404 de perfil inexistente permite completar registro; otros errores se propagan', async t => {
   const usuario = { getIdToken: async () => 'token-de-prueba-local' }
   const fetchMock = t.mock.method(globalThis, 'fetch')
-  fetchMock.mock.mockImplementation(async () => new Response('{}', { status: 404 }))
+  fetchMock.mock.mockImplementation(async () => new Response(JSON.stringify({ success: false, message: 'Este usuario aún no tiene perfil.' }), { status: 404 }))
   assert.equal(await consultarPerfil(usuario), null)
   for (const status of [401, 500]) {
     fetchMock.mock.mockImplementation(async () => new Response('{}', { status }))

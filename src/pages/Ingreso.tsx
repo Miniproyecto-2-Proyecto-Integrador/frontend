@@ -5,7 +5,7 @@ import { Link, Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/auth'
 import { BotonGoogle } from '../components/auth/BotonGoogle'
 import { Button } from '../components/common/Button'
-import { Cargando } from '../components/common/Estados'
+import { Cargando, MensajeExito } from '../components/common/Estados'
 import { Tarjeta } from '../components/common/Tarjeta'
 import { esUsuarioGoogle } from '../services/googleAuth'
 import { CampoFormulario } from '../components/auth/CampoFormulario'
@@ -16,7 +16,8 @@ import { ConsultaCanceladaError } from '../services/consultaCoordinada'
 
 export function Ingreso() {
   const { usuario, estado, error, actualizarPerfil, googleActivo, ingresarConCorreo, correoActivo, cerrandoSesion } = useAuth()
-  const destino = destinoDelEstado(useLocation().state)
+  const location = useLocation()
+  const destino = destinoDelEstado(location.state)
   const [{ datos, errores }, dispatch] = useReducer(reducirIngreso, ingresoInicial)
   const [visible, setVisible] = useState(false)
   const [mensaje, setMensaje] = useState('')
@@ -76,14 +77,8 @@ export function Ingreso() {
   return <section className="mx-auto max-w-xl px-4 py-12">
     <h1 ref={titulo} tabIndex={-1} className="text-center">Iniciar sesión</h1>
     <p className="mt-3 text-center text-lg text-texto-suave">Accede con tu correo y contraseña o continúa con Google.</p>
+    {location.state?.correoActualizado === true && <div className="mt-6"><MensajeExito>Tu perfil se guardó. Inicia sesión de nuevo con tu correo actualizado.</MensajeExito></div>}
     <Tarjeta className="mt-6">
-      {estado === 'cargando' && !googleActivo && <div className="mb-6"><Cargando detalle="Estamos comprobando tu sesión y tu perfil." /></div>}
-      {estado === 'error' && <div ref={alerta} tabIndex={-1} role="alert" className="mb-6 rounded-xl bg-error-fondo p-4 text-error">
-        <p>{error}</p>
-        <p className="mt-2">No pudimos comprobar tu perfil. Reintenta la consulta para continuar.</p>
-        <Button className="mt-3" onClick={() => void reintentar()} disabled={ocupado}>Reintentar</Button>
-      </div>}
-      {mensaje && <div ref={estado === 'error' ? undefined : alerta} tabIndex={-1} role="alert" className="mb-6 rounded-xl bg-error-fondo p-4 text-error">{mensaje}</div>}
       <form ref={formulario} noValidate onSubmit={enviar} aria-busy={enviando || correoActivo} className="mb-6 space-y-6">
         <CampoFormulario id="correo" etiqueta="Correo electrónico" type="email" autoComplete="email" required
           value={datos.correo} error={errores.correo} disabled={ocupado}
@@ -94,7 +89,15 @@ export function Ingreso() {
           <button type="button" aria-controls="password" aria-pressed={visible} aria-label={visible ? 'Ocultar contraseña' : 'Mostrar contraseña'} disabled={ocupado}
             onClick={() => setVisible(actual => !actual)} className="absolute inset-y-0 right-1 inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl px-3 text-azul-texto">{visible ? <Eye aria-hidden="true" size={20} /> : <EyeOff aria-hidden="true" size={20} />}</button>
         </CampoFormulario>
-        {(enviando || correoActivo) && <Cargando detalle="Estamos iniciando sesión y comprobando tu perfil." />}
+        {estado === 'error' && <div ref={alerta} tabIndex={-1} role="alert" className="rounded-xl bg-error-fondo p-4 text-error">
+          <p>{error}</p>
+          <p className="mt-2">No pudimos comprobar tu perfil. Reintenta la consulta para continuar.</p>
+          <Button className="mt-3" onClick={() => void reintentar()} disabled={ocupado}>Reintentar</Button>
+        </div>}
+        {mensaje && <div ref={estado === 'error' ? undefined : alerta} tabIndex={-1} role="alert" className="rounded-xl bg-error-fondo p-4 text-error">{mensaje}</div>}
+        {(enviando || correoActivo || (estado === 'cargando' && !googleActivo)) && (
+          <Cargando detalle={enviando || correoActivo ? 'Estamos iniciando sesión y comprobando tu perfil.' : 'Estamos comprobando tu sesión y tu perfil.'} />
+        )}
         <Button type="submit" className="w-full" disabled={ocupado || estado !== 'sin-sesion'}>Iniciar sesión</Button>
       </form>
       <BotonGoogle disabled={ocupado || estado === 'cargando'} />

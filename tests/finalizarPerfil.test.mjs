@@ -9,7 +9,7 @@ const { ConsultaCanceladaError } = await import('../src/services/consultaCoordin
 const usuario = { uid: 'google-A', getIdToken: async () => 'id-token-prueba' }
 const datos = { nombres: 'Lucía', apellidos: 'García', username: 'lucia_2026', avatar: 'avatar1' }
 const perfil = { ...datos, correo: 'lucia@example.com', creadoEn: null }
-const respuesta = (status, body = {}) => new Response(JSON.stringify(body), { status })
+const respuesta = (status, body = status === 404 ? { success: false, message: 'Este usuario aún no tiene perfil.' } : {}) => new Response(JSON.stringify(body), { status })
 
 test('Google nuevo: GET 404, POST autenticado sin correo/contraseña, GET de confirmación', async t => {
   const peticiones = []

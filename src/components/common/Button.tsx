@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react'
+import type { ComponentPropsWithRef, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
 type Variante = 'primario' | 'secundario' | 'peligro'
@@ -12,7 +12,7 @@ const estilos: Record<Variante, string> = {
   peligro: 'bg-error text-white hover:bg-red-800',
 }
 
-type BotonProps = ButtonHTMLAttributes<HTMLButtonElement> & { variante?: Variante }
+type BotonProps = ComponentPropsWithRef<'button'> & { variante?: Variante }
 
 export function Button({ variante = 'primario', className = '', ...props }: BotonProps) {
   return <button type="button" className={`${base} ${estilos[variante]} ${className}`} {...props} />
