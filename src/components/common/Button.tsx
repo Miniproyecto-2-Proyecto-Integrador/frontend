@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 type Variante = 'primario' | 'secundario' | 'peligro'
 
 const base =
-  'inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-2 text-base font-bold transition-colors disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-200 disabled:text-slate-600'
+  'inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-2 text-base font-bold transition-[color,background-color,border-color,box-shadow,translate] duration-200 ease-out motion-safe:enabled:hover:-translate-y-1 motion-safe:enabled:focus-visible:-translate-y-1 motion-safe:enabled:active:translate-y-0 motion-safe:[a&]:hover:-translate-y-1 motion-safe:[a&]:focus-visible:-translate-y-1 motion-safe:[a&]:active:translate-y-0 enabled:hover:shadow-md [a&]:hover:shadow-md motion-reduce:transition-none disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-200 disabled:text-slate-600'
 
 const estilos: Record<Variante, string> = {
   primario: 'bg-primario text-white hover:bg-primario-oscuro',

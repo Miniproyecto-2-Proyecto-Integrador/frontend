@@ -1,9 +1,10 @@
+import { Eye, EyeOff } from 'lucide-react'
 import { useReducer, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
+import { Link, Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/auth'
 import { BotonGoogle } from '../components/auth/BotonGoogle'
-import { Button, ButtonLink } from '../components/common/Button'
+import { Button } from '../components/common/Button'
 import { Cargando } from '../components/common/Estados'
 import { Tarjeta } from '../components/common/Tarjeta'
 import { esUsuarioGoogle } from '../services/googleAuth'
@@ -90,15 +91,18 @@ export function Ingreso() {
         <CampoFormulario id="password" etiqueta="Contraseña" type={visible ? 'text' : 'password'} autoComplete="current-password" required
           value={datos.password} error={errores.password} disabled={ocupado}
           onChange={e => dispatch({ tipo: 'editar', campo: 'password', valor: e.target.value })}>
-          <button type="button" aria-controls="password" aria-pressed={visible} disabled={ocupado}
-            onClick={() => setVisible(actual => !actual)} className="absolute inset-y-0 right-1 min-h-11 rounded-xl px-3 font-bold text-azul-texto">{visible ? 'Ocultar' : 'Mostrar'}</button>
+          <button type="button" aria-controls="password" aria-pressed={visible} aria-label={visible ? 'Ocultar contraseña' : 'Mostrar contraseña'} disabled={ocupado}
+            onClick={() => setVisible(actual => !actual)} className="absolute inset-y-0 right-1 inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl px-3 text-azul-texto">{visible ? <Eye aria-hidden="true" size={20} /> : <EyeOff aria-hidden="true" size={20} />}</button>
         </CampoFormulario>
         {(enviando || correoActivo) && <Cargando detalle="Estamos iniciando sesión y comprobando tu perfil." />}
         <Button type="submit" className="w-full" disabled={ocupado || estado !== 'sin-sesion'}>Iniciar sesión</Button>
       </form>
       <BotonGoogle disabled={ocupado || estado === 'cargando'} />
-      <p className="mt-6 text-texto-suave">¿Todavía no tienes cuenta?</p>
-      <ButtonLink to="/registro" state={{ from: destino }} variante="secundario" className="mt-3">Crear cuenta</ButtonLink>
+      <hr className="my-6 border-borde-tarjeta" />
+      <p className="text-left text-texto-suave">
+        ¿Todavía no tienes cuenta?{' '}
+        <Link to="/registro" state={{ from: destino }} className="font-bold text-primario-oscuro underline underline-offset-4 hover:text-azul-texto">Crear cuenta</Link>
+      </p>
     </Tarjeta>
   </section>
 }

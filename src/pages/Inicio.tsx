@@ -8,19 +8,16 @@ export function Inicio() {
   return (
     <section className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-12 sm:py-16 lg:grid-cols-2">
       <div>
-        <Chip
-          color="rosa"
-          icono={<span aria-hidden="true" className="size-2 rounded-full bg-acento" />}
-        >
-          Estudio en tiempo real
-        </Chip>
-        <h1 className="mt-4">Estudien juntos, aunque estén lejos</h1>
+        <h1 className="mt-4 text-4xl leading-[1.15] tracking-tight sm:text-5xl">
+          Estudien <span className="text-[#1D4ED8]">juntos</span>, aunque estén{' '}
+          <span className="text-black">lejos</span>
+        </h1>
         <p className="mt-4 max-w-xl text-lg text-texto-suave">
           Crea una sala, comparte su ID y estudia con tus compañeros con chat, cámara, micrófono y
           pantalla compartida.
         </p>
 
-        <div className="mt-8 flex flex-wrap gap-3">
+        <div className="mt-12 flex flex-wrap gap-3">
           <ButtonLink to="/registro">
             Crear cuenta
             <ArrowRight aria-hidden="true" size={18} />
