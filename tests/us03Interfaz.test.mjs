@@ -23,9 +23,10 @@ function renderizar(elemento, cambios = {}, entrada = '/') {
   ))
 }
 
-test('encabezado completo enlaza Panel y Mi perfil; conserva menú accesible', () => {
+test('encabezado completo enlaza Salas y Mi perfil; conserva menú accesible', () => {
   const html = renderizar(createElement(Encabezado, { onCerrarSesion() {} }))
   assert.match(html, /href="\/dashboard"/)
+  assert.match(html, />Salas<\/a>/)
   assert.match(html, /Mi perfil/)
   assert.match(html, /Cerrar sesión/)
   assert.doesNotMatch(html, /Crear cuenta|Iniciar sesión/)
@@ -43,6 +44,7 @@ test('visitantes y perfiles inciertos no ven enlaces al Panel', () => {
 
 test('Panel usa nombre y avatar del perfil y el texto vacío exacto, sin cierre provisional', () => {
   const html = renderizar(createElement(Panel))
+  assert.match(html, /<h1>Salas<\/h1>/)
   assert.match(html, /Hola, Lucía\./)
   assert.match(html, /aria-label="Avatar 3"/)
   assert.match(html, /Todavía no tienes salas\. Aquí las verás cuando las tengas/)

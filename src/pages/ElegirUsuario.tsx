@@ -31,7 +31,6 @@ export function ElegirUsuario() {
 }
 
 function FormularioPerfilGoogle({ usuario }: { usuario: User }) {
-  const destino = destinoDelEstado(useLocation().state)
   const { estado, error, actualizarPerfil, cerrarSesion, googleActivo } = useAuth()
   const [{ datos, errores }, dispatch] = useReducer(reducirFormulario, formularioInicial)
   const [ocupado, setOcupado] = useState(false)
@@ -114,11 +113,11 @@ function FormularioPerfilGoogle({ usuario }: { usuario: User }) {
     } finally { bloqueo.current = false; setOcupado(false) }
   }
 
-  if (estado === 'completo' && !ocupado) return <Navigate to={destino} replace />
+  if (estado === 'completo' && !ocupado) return <Navigate to="/dashboard" replace />
 
   return <section className="mx-auto max-w-2xl px-4 py-12">
     <h1 ref={titulo} tabIndex={-1}>Completar perfil</h1>
-    <p className="mt-3 text-lg text-texto-suave">Elige tu nombre de usuario y confirma tus datos para continuar al Panel.</p>
+    <p className="mt-3 text-lg text-texto-suave">Elige tu nombre de usuario y confirma tus datos para acceder a tus salas.</p>
     <Tarjeta className="mt-6">
       <div className="mb-6 rounded-xl bg-azul-claro p-4 text-azul-texto">
         <p className="font-bold">Cuenta de Google</p>

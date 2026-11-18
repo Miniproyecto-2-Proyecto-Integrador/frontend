@@ -16,7 +16,7 @@ export class ApiError extends Error {
   }
 }
 
-async function solicitar<T>(path: string, method: 'GET' | 'POST' | 'PATCH', token?: string, body?: unknown): Promise<T> {
+async function solicitar<T>(path: string, method: 'GET' | 'POST' | 'PATCH' | 'DELETE', token?: string, body?: unknown): Promise<T> {
   if (!API_URL || API_URL === 'url_vite_ejemplo') {
     throw new ApiError('Falta configurar la dirección del servidor (VITE_API_URL).')
   }
@@ -60,6 +60,9 @@ async function solicitar<T>(path: string, method: 'GET' | 'POST' | 'PATCH', toke
     throw fallo
   }
 
+  // Una respuesta 204 no trae cuerpo (por ejemplo, al eliminar la cuenta).
+  if (respuesta.status === 204) return undefined as T
+
   try {
     return (await respuesta.json()) as T
   } catch {
@@ -77,4 +80,8 @@ export function apiPost<T>(path: string, body: unknown, token: string): Promise<
 
 export function apiPatch<T>(path: string, body: unknown, token: string): Promise<T> {
   return solicitar<T>(path, 'PATCH', token, body)
+}
+
+export function apiDelete(path: string, token: string): Promise<void> {
+  return solicitar<void>(path, 'DELETE', token)
 }

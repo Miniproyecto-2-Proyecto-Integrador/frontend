@@ -1,5 +1,5 @@
-import type { User } from 'firebase/auth'
-import { ApiError, apiGet, apiPost, apiPatch } from './apiClient'
+import type { User } from 'firebase/auth';
+import { ApiError, apiDelete, apiGet, apiPatch, apiPost } from './apiClient';
 
 export type DatosPerfil = { nombres: string; apellidos: string; username: string; avatar: string }
 export type Perfil = DatosPerfil & { correo: string; creadoEn: string | null }
@@ -37,4 +37,8 @@ export async function editarPerfil(usuario: User, datos: Partial<EdicionPerfil>)
   const respuesta = await apiPatch<{ success: boolean; data: Perfil }>('/api/usuarios/yo', cambios, await usuario.getIdToken())
   if (!respuesta.success || !esPerfil(respuesta.data)) throw new ApiError('No pudimos confirmar los cambios. Vuelve a cargar tu perfil.')
   return respuesta.data
+}
+
+export async function eliminarCuentaApi(usuario: User) {
+  await apiDelete('/api/usuarios/yo', await usuario.getIdToken())
 }

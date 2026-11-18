@@ -1,19 +1,19 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { ReactNode } from 'react'
-import { onAuthStateChanged, signOut } from 'firebase/auth'
 import type { User } from 'firebase/auth'
-import { obtenerAuth } from '../services/firebase'
-import { consultarPerfil, editarPerfil } from '../services/api/usuarios'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
+import type { ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { EdicionPerfil, Perfil } from '../services/api/usuarios'
-import { AuthContext } from './auth'
-import type { EstadoSesion } from './auth'
-import { ConsultaCanceladaError, crearConsultaCoordinada } from '../services/consultaCoordinada'
+import { consultarPerfil, editarPerfil, eliminarCuentaApi } from '../services/api/usuarios'
 import { confirmarCierreSesion } from '../services/confirmarCierreSesion'
-import { autenticarConGoogle, crearAccesoGoogle } from '../services/googleAuth'
+import { ConsultaCanceladaError, crearConsultaCoordinada } from '../services/consultaCoordinada'
+import { obtenerAuth } from '../services/firebase'
 import type { AvisoGoogle } from '../services/googleAuth'
+import { autenticarConGoogle, crearAccesoGoogle } from '../services/googleAuth'
 import { accederConCorreo, autenticarConCorreo } from '../services/ingresoCorreo'
-import { cambiosPerfil } from '../services/validarPerfil'
 import { crearExclusionAuth } from '../services/operacionAuth'
+import { cambiosPerfil } from '../services/validarPerfil'
+import type { EstadoSesion } from './auth'
+import { AuthContext } from './auth'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [usuario, setUsuario] = useState<User | null>(null)
@@ -141,6 +141,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
   }
 
+  async function eliminarCuenta() {
+    await excluir.current(async () => {
+      const actual = obtenerAuth().currentUser
+      if (!actual) throw new Error('Inicia sesión de nuevo para eliminar tu cuenta.')
+      await eliminarCuentaApi(actual)
+      // La cuenta ya no existe en el servidor: se cierra la sesión de este navegador.
+      try { await signOut(obtenerAuth()) } finally { limpiarSesion() }
+    })
+  }
+
   const accesoGoogle = useMemo(() => crearAccesoGoogle(autenticarConGoogle, cargar, {
     iniciar: () => { setGoogleActivo(true); setAvisoGoogle(null) },
     aviso: setAvisoGoogle,
@@ -163,5 +173,5 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
   }
 
-  return <AuthContext.Provider value={{ usuario, perfil, estado, error, actualizarPerfil, guardarPerfil, modificandoCuenta, cerrarSesion, ingresarConGoogle, googleActivo, avisoGoogle, ingresarConCorreo, correoActivo, cerrandoSesion }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ usuario, perfil, estado, error, actualizarPerfil, guardarPerfil, modificandoCuenta, cerrarSesion, eliminarCuenta, ingresarConGoogle, googleActivo, avisoGoogle, ingresarConCorreo, correoActivo, cerrandoSesion }}>{children}</AuthContext.Provider>
 }

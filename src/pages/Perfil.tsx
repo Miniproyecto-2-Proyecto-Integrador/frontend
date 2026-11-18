@@ -1,16 +1,16 @@
-import { useRef, useState } from 'react'
 import type { FormEvent } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
-import { useAuth } from '../context/auth'
-import type { EdicionPerfil, Perfil as DatosGuardados } from '../services/api/usuarios'
-import { cambiosPerfil, validarPerfil } from '../services/validarPerfil'
-import { ApiError } from '../services/api/apiClient'
-import { Tarjeta } from '../components/common/Tarjeta'
+import { CampoFormulario } from '../components/auth/CampoFormulario'
+import { SelectorAvatar } from '../components/auth/SelectorAvatar'
 import { AvatarUsuario } from '../components/common/AvatarUsuario'
 import { Button } from '../components/common/Button'
 import { Cargando, MensajeExito } from '../components/common/Estados'
-import { CampoFormulario } from '../components/auth/CampoFormulario'
-import { SelectorAvatar } from '../components/auth/SelectorAvatar'
+import { Tarjeta } from '../components/common/Tarjeta'
+import { useAuth } from '../context/auth'
+import { ApiError } from '../services/api/apiClient'
+import type { Perfil as DatosGuardados, EdicionPerfil } from '../services/api/usuarios'
+import { cambiosPerfil, validarPerfil } from '../services/validarPerfil'
 
 export function Perfil() {
   const { perfil, usuario } = useAuth()
@@ -19,7 +19,8 @@ export function Perfil() {
 
 function EditorPerfil({ inicial }: { inicial: DatosGuardados }) {
   const { perfil, guardarPerfil, modificandoCuenta, cerrandoSesion } = useAuth()
-  const cierre = useOutletContext<{ cierreEnCurso?: boolean } | undefined>()?.cierreEnCurso
+  const contexto = useOutletContext<{ cierreEnCurso?: boolean; abrirEliminarCuenta?: (boton: HTMLButtonElement) => void } | undefined>()
+  const cierre = contexto?.cierreEnCurso
   const [editando, setEditando] = useState(false)
   const botonEditar = useRef<HTMLButtonElement>(null)
   const [datos, setDatos] = useState<EdicionPerfil>(inicial)
@@ -81,6 +82,11 @@ function EditorPerfil({ inicial }: { inicial: DatosGuardados }) {
           requestAnimationFrame(() => botonEditar.current?.focus())
         }}>Cancelar</Button></div>}
       </form>
+    </Tarjeta>
+    <Tarjeta>
+      <h2>Eliminar cuenta</h2>
+      <p className="mt-2 text-texto-suave">Si eliminas tu cuenta, perderás tu perfil y las salas que creaste. Esta acción no se puede deshacer.</p>
+      <Button className="mt-4" variante="peligro" disabled={ocupado} onClick={e => contexto?.abrirEliminarCuenta?.(e.currentTarget)}>Eliminar cuenta</Button>
     </Tarjeta>
   </section>
 }

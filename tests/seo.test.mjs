@@ -9,7 +9,7 @@ const config = JSON.parse(leer('../vercel.json'))
 test('Inicio es indexable y las demás páginas actuales tienen descripción y noindex', () => {
   const titulos = {
     '/': 'Inicio', '/ingresar': 'Iniciar sesión', '/registro': 'Crear cuenta',
-    '/registro/usuario': 'Completar perfil', '/dashboard': 'Panel', '/perfil': 'Mi perfil',
+    '/registro/usuario': 'Completar perfil', '/dashboard': 'Salas', '/perfil': 'Mi perfil',
     '/salas/sala-1': 'Sala', '/base-tecnica': 'Base técnica',
     '/ayuda': 'Ayuda', '/accesibilidad': 'Declaración de accesibilidad',
   }

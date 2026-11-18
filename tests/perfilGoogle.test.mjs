@@ -83,13 +83,11 @@ test('un fallo de consulta en registro permite reintentar sin redirigir como per
   assert.doesNotMatch(html, /Tu cuenta y tu perfil están listos/)
 })
 
-test('US-01 conserva el mensaje y los botones de confirmación para una cuenta manual', () => {
+test('la cuenta manual completa redirige sin pedir continuar ni cerrar sesión', () => {
   const html = renderizar(createElement(Registro), {
     estado: 'completo', usuario: { ...google, providerData: [{ providerId: 'password' }] },
   })
-  assert.match(html, /Tu cuenta y tu perfil están listos/)
-  assert.match(html, /Ir al Panel/)
-  assert.match(html, /Cerrar sesión/)
+  assert.equal(html, '')
 })
 
 test('el dashboard oculta su contenido durante carga, error, ausencia de sesión y perfil pendiente', () => {

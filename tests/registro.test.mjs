@@ -32,12 +32,8 @@ test('error de consulta bloquea el envío y mantiene un reintento y el correo ac
   assert.match(html, /registro está bloqueado/)
 })
 
-test('el registro completo ofrece Cerrar sesión junto a Ir al Panel', () => {
-  const html = pantalla('completo')
-  assert.match(html, /Tu cuenta y tu perfil están listos/)
-  assert.match(html, /href="\/dashboard"[^>]*>Ir al Panel/)
-  assert.match(html, /<button[^>]*type="button"[^>]*>Cerrar sesión<\/button>/)
-  assert.doesNotMatch(html, /<form/)
+test('el registro completo redirige sin mostrar una pantalla de confirmación', () => {
+  assert.equal(pantalla('completo'), '')
 })
 
 test('tras el cierre confirmado y reinicio vuelve el formulario vacío del paso 1', async () => {

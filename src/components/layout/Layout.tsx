@@ -1,21 +1,25 @@
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useReducer, useRef } from 'react'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/auth'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
+import { cierreInicial, reducirCierre } from '../../services/dialogoCierre'
+import { DialogoCerrarSesion } from '../auth/DialogoCerrarSesion'
+import { DialogoEliminarCuenta } from '../auth/DialogoEliminarCuenta'
+import { MensajeExito } from '../common/Estados'
 import { Encabezado } from './Encabezado'
 import { SkipLink } from './SkipLink'
-import { useAuth } from '../../context/auth'
-import { DialogoCerrarSesion } from '../auth/DialogoCerrarSesion'
-import { MensajeExito } from '../common/Estados'
-import { cierreInicial, reducirCierre } from '../../services/dialogoCierre'
 
 export function Layout() {
   useDocumentTitle()
-  const { cerrarSesion } = useAuth()
+  const { cerrarSesion, eliminarCuenta } = useAuth()
   const navegar = useNavigate()
   const location = useLocation()
   const [{ abierto: dialogoAbierto, cerrando, error }, dispatch] = useReducer(reducirCierre, cierreInicial)
   const bloqueo = useRef(false)
   const activador = useRef<HTMLButtonElement | null>(null)
+  const [eliminacion, despacharEliminacion] = useReducer(reducirCierre, cierreInicial)
+  const bloqueoEliminar = useRef(false)
+  const activadorEliminar = useRef<HTMLButtonElement | null>(null)
 
   function cancelar() {
     if (bloqueo.current) return
@@ -36,6 +40,25 @@ export function Layout() {
     } finally { bloqueo.current = false }
   }
 
+  function cancelarEliminar() {
+    if (bloqueoEliminar.current) return
+    despacharEliminacion({ tipo: 'cancelar' })
+    requestAnimationFrame(() => activadorEliminar.current?.focus())
+  }
+  async function confirmarEliminar() {
+    if (bloqueoEliminar.current) return
+    bloqueoEliminar.current = true
+    despacharEliminacion({ tipo: 'confirmar' })
+    try {
+      await eliminarCuenta()
+      despacharEliminacion({ tipo: 'cerrado' })
+      navegar('/', { replace: true, state: { cuentaEliminada: true } })
+      requestAnimationFrame(() => document.getElementById('contenido')?.focus())
+    } catch {
+      despacharEliminacion({ tipo: 'fallo', mensaje: 'No pudimos eliminar tu cuenta. Puedes intentarlo de nuevo o cancelar.' })
+    } finally { bloqueoEliminar.current = false }
+  }
+
   return (
     <div className="relative isolate flex min-h-screen flex-col">
       <SkipLink />
@@ -47,15 +70,24 @@ export function Layout() {
         <div className="absolute bottom-0 left-1/3 size-96 rounded-full bg-lila-suave/70 blur-3xl" />
       </div>
 
-      <Encabezado cerrando={cerrando} onCerrarSesion={boton => {
+      <Encabezado cerrando={cerrando || eliminacion.cerrando} onCerrarSesion={boton => {
         activador.current = boton
         dispatch({ tipo: 'abrir' })
       }} />
       {dialogoAbierto && <DialogoCerrarSesion ocupado={cerrando} error={error} cancelar={cancelar} confirmar={() => void confirmar()} />}
 
+      {eliminacion.abierto && <DialogoEliminarCuenta ocupado={eliminacion.cerrando} error={eliminacion.error} cancelar={cancelarEliminar} confirmar={() => void confirmarEliminar()} />}
+
       <main id="contenido" tabIndex={-1} className="flex-1 focus:outline-none">
         {location.state?.sesionCerrada === true && <div className="mx-auto mt-6 max-w-3xl px-4"><MensajeExito>Sesión cerrada correctamente.</MensajeExito></div>}
-        <Outlet context={{ cierreEnCurso: cerrando }} />
+        {location.state?.cuentaEliminada === true && <div className="mx-auto mt-6 max-w-3xl px-4"><MensajeExito>Tu cuenta se eliminó correctamente.</MensajeExito></div>}
+        <Outlet context={{
+          cierreEnCurso: cerrando || eliminacion.cerrando,
+          abrirEliminarCuenta: (boton: HTMLButtonElement) => {
+            activadorEliminar.current = boton
+            despacharEliminacion({ tipo: 'abrir' })
+          },
+        }} />
       </main>
 
 

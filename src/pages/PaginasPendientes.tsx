@@ -7,7 +7,7 @@ export function ElegirUsuario() {
   return <PaginaPendiente titulo="Elegir nombre de usuario" />
 }
 export function Panel() {
-  return <PaginaPendiente titulo="Panel" />
+  return <PaginaPendiente titulo="Salas" />
 }
 export function Sala() {
   return <PaginaPendiente titulo="Sala" />

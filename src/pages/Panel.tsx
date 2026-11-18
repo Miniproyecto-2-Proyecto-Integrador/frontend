@@ -7,7 +7,7 @@ export function Panel() {
   const { perfil } = useAuth()
   return <RequierePerfil>
     <section className="mx-auto max-w-3xl px-4 py-12">
-      <h1>Panel</h1>
+      <h1>Salas</h1>
       {perfil && <div className="mt-6 flex items-center gap-4">
         <AvatarUsuario valor={perfil.avatar} />
         <p className="min-w-0 break-words text-xl">Hola, {perfil.nombres}.</p>

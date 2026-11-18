@@ -36,7 +36,7 @@ export function Encabezado({ onCerrarSesion, cerrando = false }: {
 
         <nav aria-label="Navegación principal" className="hidden items-center justify-center gap-6 lg:flex">
           {autenticado ? <>
-            <NavLink to="/dashboard" className={enlace}>Panel</NavLink>
+            <NavLink to="/dashboard" className={enlace}>Salas</NavLink>
             <NavLink to="/perfil" className={enlace}>Mi perfil</NavLink>
             <NavLink to="/ayuda" className={enlace}>Ayuda</NavLink>
           </> : <>
@@ -74,7 +74,7 @@ export function Encabezado({ onCerrarSesion, cerrando = false }: {
       >
         <ul className="flex flex-col items-start gap-1 pt-2">
           {autenticado ? <>
-            <li><NavLink to="/dashboard" onClick={cerrar} className={enlace}>Panel</NavLink></li>
+            <li><NavLink to="/dashboard" onClick={cerrar} className={enlace}>Salas</NavLink></li>
             <li><NavLink to="/perfil" onClick={cerrar} className={enlace}>Mi perfil</NavLink></li>
             <li><NavLink to="/ayuda" onClick={cerrar} className={enlace}>Ayuda</NavLink></li>
             <li><Button variante="secundario" disabled={cerrando || cerrandoSesion || googleActivo || correoActivo || modificandoCuenta} onClick={e => onCerrarSesion(e.currentTarget)}>Cerrar sesión</Button></li>
