@@ -3,8 +3,8 @@ import type { ReactNode } from 'react'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import type { User } from 'firebase/auth'
 import { obtenerAuth } from '../services/firebase'
-import { consultarPerfil } from '../services/api/usuarios'
-import type { Perfil } from '../services/api/usuarios'
+import { consultarPerfil, editarPerfil } from '../services/api/usuarios'
+import type { EdicionPerfil, Perfil } from '../services/api/usuarios'
 import { AuthContext } from './auth'
 import type { EstadoSesion } from './auth'
 import { ConsultaCanceladaError, crearConsultaCoordinada } from '../services/consultaCoordinada'
@@ -12,6 +12,7 @@ import { confirmarCierreSesion } from '../services/confirmarCierreSesion'
 import { autenticarConGoogle, crearAccesoGoogle } from '../services/googleAuth'
 import type { AvisoGoogle } from '../services/googleAuth'
 import { accederConCorreo, autenticarConCorreo } from '../services/ingresoCorreo'
+import { cambiosPerfil } from '../services/validarPerfil'
 import { crearExclusionAuth } from '../services/operacionAuth'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -25,6 +26,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [avisoGoogle, setAvisoGoogle] = useState<AvisoGoogle | null>(null)
   const [correoActivo, setCorreoActivo] = useState(false)
   const [cerrandoSesion, setCerrandoSesion] = useState(false)
+  const [modificandoCuenta, setModificandoCuenta] = useState(false)
   const excluir = useRef(crearExclusionAuth())
 
   const limpiarSesion = useCallback(() => {
@@ -108,6 +110,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return cargar(actual)
   }
 
+  async function guardarPerfil(datos: EdicionPerfil) {
+    return excluir.current(async () => {
+      const actual = obtenerAuth().currentUser
+      if (!actual || !perfil) throw new Error('Inicia sesión de nuevo para guardar tu perfil.')
+      const cambios = cambiosPerfil(perfil, datos)
+      if (!Object.keys(cambios).length) return perfil
+      setModificandoCuenta(true)
+      try {
+        const nuevo = await editarPerfil(actual, cambios)
+        if (obtenerAuth().currentUser?.uid !== actual.uid) throw new ConsultaCanceladaError()
+        consultas.current.invalidar()
+        setPerfil(nuevo)
+        // Un correo nuevo cambia las credenciales: renovar la sesión desde el login.
+        if (cambios.correo !== undefined) {
+          try { await signOut(obtenerAuth()) } finally { limpiarSesion() }
+        }
+        return nuevo
+      } finally { setModificandoCuenta(false) }
+    })
+  }
+
   async function cerrarSesion() {
     await excluir.current(async () => {
       setCerrandoSesion(true)
@@ -140,5 +163,5 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
   }
 
-  return <AuthContext.Provider value={{ usuario, perfil, estado, error, actualizarPerfil, cerrarSesion, ingresarConGoogle, googleActivo, avisoGoogle, ingresarConCorreo, correoActivo, cerrandoSesion }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ usuario, perfil, estado, error, actualizarPerfil, guardarPerfil, modificandoCuenta, cerrarSesion, ingresarConGoogle, googleActivo, avisoGoogle, ingresarConCorreo, correoActivo, cerrandoSesion }}>{children}</AuthContext.Provider>
 }

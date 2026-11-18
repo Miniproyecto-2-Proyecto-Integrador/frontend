@@ -18,7 +18,7 @@ const paginas: Record<string, MetadatosPagina> = {
   '/registro': pagina('Crear cuenta', 'Crea tu cuenta en TertuliApp y prepara tu perfil para estudiar con tus compañeros.'),
   '/registro/usuario': pagina('Completar perfil', 'Completa los datos de tu perfil en TertuliApp para continuar a tu espacio de estudio.'),
   '/dashboard': pagina('Panel', 'Accede a tu Panel personal de TertuliApp.'),
-  '/perfil': pagina('Mi perfil', 'Consulta tu perfil en TertuliApp.'),
+  '/perfil': pagina('Mi perfil', 'Consulta y actualiza tus datos personales en TertuliApp.'),
   '/base-tecnica': pagina('Base técnica', 'Pantalla de comprobación técnica de la conexión de TertuliApp con su servidor.'),
   // Ambas páginas siguen siendo provisionales: revisar la política cuando tengan contenido público definitivo.
   '/ayuda': pagina('Ayuda', 'Información de ayuda de TertuliApp.'),

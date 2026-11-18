@@ -172,10 +172,10 @@ test('los errores de campo y avatar se asocian a sus controles', () => {
   assert.match(avatar, /checked="" value="avatar2"/)
 })
 
-test('solo 404 significa perfil inexistente; errores de consulta se propagan', async t => {
+test('404 de perfil inexistente permite completar registro; otros errores se propagan', async t => {
   const usuario = { getIdToken: async () => 'token-de-prueba-local' }
   const fetchMock = t.mock.method(globalThis, 'fetch')
-  fetchMock.mock.mockImplementation(async () => new Response('{}', { status: 404 }))
+  fetchMock.mock.mockImplementation(async () => new Response(JSON.stringify({ success: false, message: 'Este usuario aún no tiene perfil.' }), { status: 404 }))
   assert.equal(await consultarPerfil(usuario), null)
   for (const status of [401, 500]) {
     fetchMock.mock.mockImplementation(async () => new Response('{}', { status }))

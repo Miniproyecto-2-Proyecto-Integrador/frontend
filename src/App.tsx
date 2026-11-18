@@ -8,11 +8,11 @@ import { Ingreso } from './pages/Ingreso'
 import { ElegirUsuario } from './pages/ElegirUsuario'
 import { AuthProvider } from './context/AuthProvider'
 import { Panel } from './pages/Panel'
+import { Perfil } from './pages/Perfil'
 import { RequierePerfil } from './components/auth/RequierePerfil'
 import {
   Accesibilidad,
   Ayuda,
-  Perfil,
   Sala,
 } from './pages/PaginasPendientes'
 

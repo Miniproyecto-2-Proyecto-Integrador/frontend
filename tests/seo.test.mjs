@@ -16,7 +16,7 @@ test('Inicio es indexable y las demás páginas actuales tienen descripción y n
   const descripciones = new Set()
   for (const [ruta, titulo] of Object.entries(titulos)) {
     const meta = metadatosParaRuta(ruta)
-    assert.equal(meta.titulo, `${titulo} · Salón de Estudio`)
+    assert.equal(meta.titulo, `${titulo} · TertuliApp`)
     assert.ok(meta.descripcion.length > 20)
     assert.equal(meta.robots, ruta === '/' ? 'index, follow' : 'noindex, follow')
     descripciones.add(meta.descripcion)
@@ -28,7 +28,7 @@ test('rutas desconocidas y descendientes no definidos nunca son indexables por d
   for (const ruta of ['/desconocida', '/dashboard/extra', '/registro/inexistente', '/salas/', '/salas/a/b', '/__proto__']) {
     const meta = metadatosParaRuta(ruta)
     assert.equal(meta.robots, 'noindex')
-    assert.equal(meta.titulo, 'Página no encontrada · Salón de Estudio')
+    assert.equal(meta.titulo, 'Página no encontrada · TertuliApp')
   }
 })
 

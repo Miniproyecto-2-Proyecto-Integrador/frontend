@@ -9,9 +9,6 @@ export function ElegirUsuario() {
 export function Panel() {
   return <PaginaPendiente titulo="Panel" />
 }
-export function Perfil() {
-  return <PaginaPendiente titulo="Mi perfil" />
-}
 export function Sala() {
   return <PaginaPendiente titulo="Sala" />
 }
