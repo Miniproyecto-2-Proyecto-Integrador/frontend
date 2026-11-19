@@ -52,7 +52,7 @@ Si falla el perfil, el reintento reutiliza la cuenta autenticada. Tras recargar,
 vuelve a `/registro`: se consulta el perfil y se solicitan los datos pendientes
 sin volver a pedir contraseña. Los datos de perfil sin guardar deben escribirse
 de nuevo; no se persisten formularios localmente.
-Solo 404 significa perfil pendiente; otros fallos permiten reintentar la consulta.
+Una respuesta 200 con data null significa perfil pendiente; otros fallos permiten reintentar la consulta.
 Un 409 provoca una consulta para distinguir perfil existente de nombre ocupado.
 
 | Historia | Rama | PR |
@@ -63,7 +63,7 @@ Un 409 provoca una consulta para distinguir perfil existente de nombre ocupado.
 
 Pruebas, limitaciones y comparación UX: [registro US-01](docs/US-01.md).
 En /ingresar, Google utiliza popup iniciado por el clic; si ya existe perfil, redirige al
-Panel. Un 404 dirige a completar perfil; errores de API permiten reintentar sin
+Panel. Una respuesta 200 con data null dirige a completar perfil; errores de API permiten reintentar sin
 repetir el popup. Al recargar, Firebase restaura la sesión. No se divide
 displayName en nombres/apellidos ni se vinculan proveedores automáticamente.
 Se conserva el cierre mínimo de US-01 en /registro y se permite cambiar de cuenta
@@ -136,3 +136,5 @@ src/
 ## Flujo de trabajo en Git
 
 Una rama por historia (por ejemplo `feature/TS-00-docker-readme`), commits con mensajes claros y un pull request por historia hacia `main`.
+
+Compatibilidad de despliegue (US-02): publicar primero el frontend, que acepta también el 404 específico del backend anterior. Después publicar el backend de TS-01 con 200 y data null. Los errores de autenticación, servidor y rutas inexistentes no se tratan como perfil pendiente.

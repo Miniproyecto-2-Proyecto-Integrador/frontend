@@ -180,3 +180,16 @@ test('404 de perfil inexistente permite completar registro; otros errores se pro
   fetchMock.mock.mockImplementation(async () => { throw new Error('Sin conexión') })
   await assert.rejects(consultarPerfil(usuario), error => error instanceof ApiError && error.status === undefined)
 })
+
+
+test('200 con data null permite completar el perfil; respuestas incompletas no', async t => {
+  const usuario = { getIdToken: async () => 'token-prueba' }
+  const fetchMock = t.mock.method(globalThis, 'fetch')
+  for (const body of [{ success: true, data: null }, { success: true }, { success: false, data: null }]) {
+    fetchMock.mock.mockImplementation(async () => new Response(JSON.stringify(body), { status: 200 }))
+    if (body.success && body.data === null) assert.equal(await consultarPerfil(usuario), null)
+    else await assert.rejects(consultarPerfil(usuario), /perfil incompleto/)
+  }
+  fetchMock.mock.mockImplementation(async () => new Response(JSON.stringify({ success: false, message: 'Ruta inexistente' }), { status: 404 }))
+  await assert.rejects(consultarPerfil(usuario), error => error.status === 404)
+})

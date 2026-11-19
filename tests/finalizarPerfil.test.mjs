@@ -11,9 +11,9 @@ const datos = { nombres: 'Lucía', apellidos: 'García', username: 'lucia_2026',
 const perfil = { ...datos, correo: 'lucia@example.com', creadoEn: null }
 const respuesta = (status, body = status === 404 ? { success: false, message: 'Este usuario aún no tiene perfil.' } : {}) => new Response(JSON.stringify(body), { status })
 
-test('Google nuevo: GET 404, POST autenticado sin correo/contraseña, GET de confirmación', async t => {
+test('Google nuevo: GET 200 sin perfil, POST autenticado sin correo/contraseña, GET de confirmación', async t => {
   const peticiones = []
-  const cola = [respuesta(404), respuesta(201, { success: true }), respuesta(200, { success: true, data: perfil })]
+  const cola = [respuesta(200, { success: true, data: null }), respuesta(201, { success: true }), respuesta(200, { success: true, data: perfil })]
   t.mock.method(globalThis, 'fetch', async (url, opciones) => {
     peticiones.push({ url, opciones })
     assert.equal(opciones.headers.Authorization, 'Bearer id-token-prueba')
@@ -46,7 +46,7 @@ test('401, 500 y red al consultar no se interpretan como perfil inexistente', as
 
 test('400, 401 y 500 al guardar conservan el error y no confirman acceso al Panel', async t => {
   for (const status of [400, 401, 500]) {
-    const cola = [respuesta(404), respuesta(status, { message: 'Revisa los datos', errores: { nombres: 'Revisa tus nombres' } })]
+    const cola = [respuesta(200, { success: true, data: null }), respuesta(status, { message: 'Revisa los datos', errores: { nombres: 'Revisa tus nombres' } })]
     const fetch = t.mock.method(globalThis, 'fetch', async () => cola.shift())
     await assert.rejects(finalizarPerfil(usuario, datos, consultarPerfil, () => usuario), error =>
       error instanceof ApiError && error.status === status && error.errores.nombres === 'Revisa tus nombres')
@@ -58,8 +58,8 @@ test('400, 401 y 500 al guardar conservan el error y no confirman acceso al Pane
 test('409 distingue nombre ocupado de perfil ya creado mediante otra consulta', async t => {
   for (const existe of [false, true]) {
     const cola = [
-      respuesta(404), respuesta(409, { message: 'Conflicto', errores: { username: 'Ocupado' } }),
-      existe ? respuesta(200, { success: true, data: perfil }) : respuesta(404),
+      respuesta(200, { success: true, data: null }), respuesta(409, { message: 'Conflicto', errores: { username: 'Ocupado' } }),
+      existe ? respuesta(200, { success: true, data: perfil }) : respuesta(200, { success: true, data: null }),
     ]
     const fetch = t.mock.method(globalThis, 'fetch', async () => cola.shift())
     const proceso = finalizarPerfil(usuario, datos, consultarPerfil, () => usuario)
@@ -94,7 +94,7 @@ test('si se perdió la respuesta del POST, el reintento reconoce el perfil y no 
   t.mock.method(globalThis, 'fetch', async (url, opciones) => {
     metodos.push(opciones.method)
     intento += 1
-    if (intento === 1) return respuesta(404)
+    if (intento === 1) return respuesta(200, { success: true, data: null })
     if (intento === 2) throw new Error('Respuesta perdida')
     return respuesta(200, { success: true, data: perfil })
   })

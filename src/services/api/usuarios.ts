@@ -12,8 +12,9 @@ function esPerfil(valor: unknown): valor is Perfil {
 
 export async function consultarPerfil(usuario: User): Promise<Perfil | null> {
   try {
-    const respuesta = await apiGet<{ success: boolean; data: Perfil }>('/api/usuarios/yo', await usuario.getIdToken())
+    const respuesta = await apiGet<{ success: boolean; data: Perfil | null }>('/api/usuarios/yo', await usuario.getIdToken())
     const perfil = respuesta.data
+    if (respuesta.success && perfil === null) return null
     if (!respuesta.success || !esPerfil(perfil)) {
       throw new ApiError('El servidor devolvió un perfil incompleto. Reintenta la consulta.')
     }
