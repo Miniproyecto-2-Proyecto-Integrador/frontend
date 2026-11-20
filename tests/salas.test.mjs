@@ -49,3 +49,18 @@ test('una lista vacía es válida; respuestas incompletas o no autorizadas no se
     await assert.rejects(crearSala(usuario, 'Cálculo'), /confirmar la sala creada/)
   } finally { globalThis.fetch = original }
 })
+
+
+test('acepta salas nuevas de 8 caracteres y listas mezcladas con IDs anteriores', async t => {
+  const nueva = { ...sala, id: 'Ab3_xY-9' }
+  t.mock.method(globalThis, 'fetch', async (_url, opciones) => new Response(JSON.stringify({ success: true, data: opciones.method === 'POST' ? nueva : [nueva, sala] })))
+  assert.deepEqual(await crearSala(usuario, 'Cálculo'), nueva)
+  assert.deepEqual(await listarSalas(usuario), [nueva, sala])
+})
+test('rechaza IDs de longitud incorrecta o con separadores de ruta', async t => {
+  for (const id of ['1234567', '123456789', 'Ab3/xY-9', 'Ab3 xY-9', '_'.repeat(20)]) {
+    const fetch = t.mock.method(globalThis, 'fetch', async () => new Response(JSON.stringify({ success: true, data: [{ ...sala, id }] })))
+    await assert.rejects(listarSalas(usuario), /leer tus salas/)
+    fetch.mock.restore()
+  }
+})
