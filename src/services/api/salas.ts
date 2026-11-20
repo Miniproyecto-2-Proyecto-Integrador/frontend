@@ -9,7 +9,7 @@ export function validarNombreSala(valor: string): string {
 function esSala(valor: unknown): valor is SalaPropia {
   if (!valor || typeof valor !== 'object') return false
   const sala = valor as Record<string, unknown>
-  return typeof sala.id === 'string' && /^[a-zA-Z0-9]{20}$/.test(sala.id)
+  return typeof sala.id === 'string' && /^(?:[A-Za-z0-9_-]{8}|[A-Za-z0-9]{20})$/.test(sala.id)
     && typeof sala.nombre === 'string' && !validarNombreSala(sala.nombre) && sala.rol === 'administrador'
 }
 async function token(usuario: User) {
