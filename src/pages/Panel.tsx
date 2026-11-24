@@ -10,6 +10,7 @@ import { Button, ButtonLink } from '../components/common/Button'
 import { Tarjeta } from '../components/common/Tarjeta'
 import { CampoFormulario } from '../components/auth/CampoFormulario'
 import { CopiarIdSala } from '../components/common/CopiarIdSala'
+import { UnirseASala } from '../components/salas/UnirseASala'
 import { useSalasPropias } from '../hooks/useSalasPropias'
 import { crearSala, validarNombreSala } from '../services/api/salas'
 
@@ -76,7 +77,9 @@ function MisSalas() {
     </div>}
     <p className="mt-4 text-texto-suave">Organiza un espacio para estudiar y comparte su ID con tus compañeros.</p>
 
-    <div className="mt-10">
+    <div className="mt-8 max-w-xl"><UnirseASala deshabilitado={modificandoCuenta || cerrandoSesion} /></div>
+
+    <div className="mt-12">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h2>Mis salas</h2>
         {(cargando || error || salas.length > 0) && <Button disabled={ocupado || mostrarFormulario}
