@@ -2,6 +2,19 @@ import type { User } from 'firebase/auth'
 import { ApiError, apiGet, apiPost } from './apiClient'
 
 export type SalaPropia = { id: string; nombre: string; rol: 'administrador' }
+// US-08: la sala que devuelve GET /api/salas/:id; el rol lo calcula el servidor.
+export type SalaAcceso = { id: string; nombre: string; rol: 'administrador' | 'participante' }
+const formatoIdSala = /^(?:[A-Za-z0-9_-]{8}|[A-Za-z0-9]{20})$/
+export const MENSAJE_ID_SALA = 'Escribe un ID de sala válido: 8 caracteres entre letras, números, guion o guion bajo.'
+// Los espacios al inicio o al final se ignoran, igual que en la API.
+export function normalizarIdSala(valor: string): string {
+  return valor.trim()
+}
+export function validarIdSala(valor: string): string {
+  const id = normalizarIdSala(valor)
+  if (!id) return 'Escribe el ID de la sala.'
+  return formatoIdSala.test(id) ? '' : MENSAJE_ID_SALA
+}
 export function validarNombreSala(valor: string): string {
   const nombre = valor.trim()
   return !nombre || Array.from(nombre).length > 80 ? 'Escribe un nombre de sala de 1 a 80 caracteres.' : ''
@@ -30,4 +43,16 @@ export async function crearSala(usuario: User, valor: string): Promise<SalaPropi
   const respuesta = await apiPost<{ success: boolean; data: unknown }>('/api/salas', { nombre: valor.trim() }, await token(usuario))
   if (!respuesta.success || !esSala(respuesta.data)) throw new ApiError('No pudimos confirmar la sala creada. Revisa tus salas antes de reintentar.')
   return respuesta.data
+}
+export async function obtenerSala(usuario: User, valor: string): Promise<SalaAcceso> {
+  const error = validarIdSala(valor)
+  if (error) throw new ApiError(error, 400)
+  const id = normalizarIdSala(valor)
+  const respuesta = await apiGet<{ success: boolean; data: unknown }>(`/api/salas/${encodeURIComponent(id)}`, await token(usuario))
+  const sala = respuesta.data as Record<string, unknown> | null
+  if (!respuesta.success || !sala || typeof sala !== 'object' || sala.id !== id || typeof sala.nombre !== 'string'
+    || validarNombreSala(sala.nombre) || (sala.rol !== 'administrador' && sala.rol !== 'participante')) {
+    throw new ApiError('No pudimos confirmar la sala. Intenta de nuevo.')
+  }
+  return { id, nombre: sala.nombre, rol: sala.rol }
 }
