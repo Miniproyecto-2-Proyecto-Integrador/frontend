@@ -1,5 +1,5 @@
 import type { User } from 'firebase/auth'
-import { ApiError, apiGet, apiPost } from './apiClient'
+import { ApiError, apiDelete, apiGet, apiPatch, apiPost } from './apiClient'
 
 export type SalaPropia = { id: string; nombre: string; rol: 'administrador' }
 // US-08: la sala que devuelve GET /api/salas/:id; el rol lo calcula el servidor.
@@ -55,4 +55,27 @@ export async function obtenerSala(usuario: User, valor: string): Promise<SalaAcc
     throw new ApiError('No pudimos confirmar la sala. Intenta de nuevo.')
   }
   return { id, nombre: sala.nombre, rol: sala.rol }
+}
+
+// US-07: solo el anfitrión puede editar o eliminar; el servidor responde 403 a cualquier otra persona.
+export async function actualizarSala(usuario: User, valor: string, nombreNuevo: string): Promise<SalaAcceso> {
+  const errorId = validarIdSala(valor)
+  if (errorId) throw new ApiError(errorId, 400)
+  const errorNombre = validarNombreSala(nombreNuevo)
+  if (errorNombre) throw new ApiError(errorNombre, 400)
+  const id = normalizarIdSala(valor)
+  const respuesta = await apiPatch<{ success: boolean; data: unknown }>(
+    `/api/salas/${encodeURIComponent(id)}`, { nombre: nombreNuevo.trim() }, await token(usuario))
+  const sala = respuesta.data as Record<string, unknown> | null
+  if (!respuesta.success || !sala || typeof sala !== 'object' || sala.id !== id || typeof sala.nombre !== 'string'
+    || validarNombreSala(sala.nombre) || sala.rol !== 'administrador') {
+    throw new ApiError('No pudimos confirmar el cambio. Revisa el nombre de la sala antes de reintentar.')
+  }
+  return { id, nombre: sala.nombre, rol: 'administrador' }
+}
+
+export async function eliminarSala(usuario: User, valor: string): Promise<void> {
+  const errorId = validarIdSala(valor)
+  if (errorId) throw new ApiError(errorId, 400)
+  await apiDelete(`/api/salas/${encodeURIComponent(normalizarIdSala(valor))}`, await token(usuario))
 }

@@ -1,11 +1,11 @@
 import { useRef, useState } from 'react'
 import { Leaf, Plus } from 'lucide-react'
 import type { FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/auth'
 import { RequierePerfil } from '../components/auth/RequierePerfil'
 import { AvatarUsuario } from '../components/common/AvatarUsuario'
-import { Cargando, EstadoVacio, MensajeError } from '../components/common/Estados'
+import { Cargando, EstadoVacio, MensajeAviso, MensajeError, MensajeExito } from '../components/common/Estados'
 import { Button, ButtonLink } from '../components/common/Button'
 import { Tarjeta } from '../components/common/Tarjeta'
 import { CampoFormulario } from '../components/auth/CampoFormulario'
@@ -14,14 +14,23 @@ import { UnirseASala } from '../components/salas/UnirseASala'
 import { useSalasPropias } from '../hooks/useSalasPropias'
 import { crearSala, validarNombreSala } from '../services/api/salas'
 
+// US-07: aviso tras eliminar una sala (la propia o la que el anfitrión eliminó estando dentro).
+function avisoDeSala(estado: unknown): { tipo: 'eliminada-propia' | 'eliminada-por-anfitrion'; nombre: string } | null {
+  const aviso = estado && typeof estado === 'object' && 'avisoSala' in estado ? (estado as { avisoSala: unknown }).avisoSala : null
+  if (!aviso || typeof aviso !== 'object') return null
+  const { tipo, nombre } = aviso as { tipo?: unknown; nombre?: unknown }
+  return (tipo === 'eliminada-propia' || tipo === 'eliminada-por-anfitrion') && typeof nombre === 'string' ? { tipo, nombre } : null
+}
+
 export function Panel() {
   return <RequierePerfil><MisSalas /></RequierePerfil>
 }
 
 function MisSalas() {
   const { perfil, usuario, modificandoCuenta, cerrandoSesion } = useAuth()
-  const { salas, error, cargando, reintentar } = useSalasPropias()
+  const { salas, error, cargando, aviso: avisoLista, reintentar } = useSalasPropias()
   const navegar = useNavigate()
+  const aviso = avisoDeSala(useLocation().state)
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
   const activador = useRef<HTMLButtonElement | null>(null)
   const [nombre, setNombre] = useState('')
@@ -75,6 +84,9 @@ function MisSalas() {
       <AvatarUsuario valor={perfil.avatar} />
       <p className="min-w-0 break-words text-xl">Hola, {perfil.nombres}.</p>
     </div>}
+    {aviso && <div className="mt-6 max-w-xl">{aviso.tipo === 'eliminada-propia'
+      ? <MensajeExito>La sala «{aviso.nombre}» se eliminó correctamente.</MensajeExito>
+      : <MensajeAviso>El anfitrión eliminó la sala «{aviso.nombre}». Volviste al panel.</MensajeAviso>}</div>}
     <p className="mt-4 text-texto-suave">Organiza un espacio para estudiar y comparte su ID con tus compañeros.</p>
 
     <div className="mt-8 max-w-xl"><UnirseASala deshabilitado={modificandoCuenta || cerrandoSesion} /></div>
@@ -82,6 +94,7 @@ function MisSalas() {
     <div className="mt-12">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h2>Mis salas</h2>
+        <p role="status" className="sr-only">{avisoLista}</p>
         {(cargando || error || salas.length > 0) && <Button disabled={ocupado || mostrarFormulario}
           aria-expanded={mostrarFormulario} aria-controls="crear-sala-formulario" onClick={evento => abrirFormulario(evento.currentTarget)}>
           <Plus aria-hidden="true" size={20} /> Crear sala
