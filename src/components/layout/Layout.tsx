@@ -1,12 +1,14 @@
-import { useReducer, useRef } from 'react'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Suspense, useReducer, useRef } from 'react'
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/auth'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 import { cierreInicial, reducirCierre } from '../../services/dialogoCierre'
 import { DialogoCerrarSesion } from '../auth/DialogoCerrarSesion'
 import { DialogoEliminarCuenta } from '../auth/DialogoEliminarCuenta'
-import { MensajeExito } from '../common/Estados'
+import { Cargando, MensajeExito } from '../common/Estados'
+import { LogoArbol } from '../common/LogoArbol'
 import { Encabezado } from './Encabezado'
+import { FondoNaturaleza } from './FondoNaturaleza'
 import { SkipLink } from './SkipLink'
 
 export function Layout() {
@@ -63,12 +65,7 @@ export function Layout() {
     <div className="relative isolate flex min-h-screen flex-col">
       <SkipLink />
 
-      {/* Fondo «aurora»: solo decoración, nunca lleva texto encima */}
-      <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute -left-24 top-0 size-96 rounded-full bg-rosa-suave blur-3xl" />
-        <div className="absolute -right-24 top-24 size-[28rem] rounded-full bg-azul-suave blur-3xl" />
-        <div className="absolute bottom-0 left-1/3 size-96 rounded-full bg-lila-suave/70 blur-3xl" />
-      </div>
+      <FondoNaturaleza />
 
       <Encabezado cerrando={cerrando || eliminacion.cerrando} onCerrarSesion={boton => {
         activador.current = boton
@@ -81,16 +78,32 @@ export function Layout() {
       <main id="contenido" tabIndex={-1} className="flex-1 focus:outline-none">
         {location.state?.sesionCerrada === true && <div className="mx-auto mt-6 max-w-3xl px-4"><MensajeExito>Sesión cerrada correctamente.</MensajeExito></div>}
         {location.state?.cuentaEliminada === true && <div className="mx-auto mt-6 max-w-3xl px-4"><MensajeExito>Tu cuenta se eliminó correctamente.</MensajeExito></div>}
-        <Outlet context={{
-          cierreEnCurso: cerrando || eliminacion.cerrando,
-          abrirEliminarCuenta: (boton: HTMLButtonElement) => {
-            activadorEliminar.current = boton
-            despacharEliminacion({ tipo: 'abrir' })
-          },
-        }} />
+        <Suspense fallback={<div className="mx-auto max-w-3xl px-4 py-12"><Cargando /></div>}>
+          <Outlet context={{
+            cierreEnCurso: cerrando || eliminacion.cerrando,
+            abrirEliminarCuenta: (boton: HTMLButtonElement) => {
+              activadorEliminar.current = boton
+              despacharEliminacion({ tipo: 'abrir' })
+            },
+          }} />
+        </Suspense>
       </main>
 
-
+      <footer className="mt-16 bg-corteza text-papel">
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 sm:flex-row sm:items-center sm:justify-between">
+          <p className="flex items-center gap-3 font-titulo text-xl font-bold">
+            <LogoArbol className="size-9 shrink-0" />
+            TertuliApp
+            <span className="font-texto text-base font-normal text-papel/90">Estudiar juntos, bajo el mismo árbol.</span>
+          </p>
+          <nav aria-label="Pie de página">
+            <ul className="flex flex-wrap gap-x-6">
+              <li><Link to="/ayuda" className="inline-flex min-h-11 items-center font-bold underline underline-offset-4 decoration-1 transition-[text-decoration-thickness] hover:decoration-2 focus-visible:outline-papel">Ayuda</Link></li>
+              <li><Link to="/accesibilidad" className="inline-flex min-h-11 items-center font-bold underline underline-offset-4 decoration-1 transition-[text-decoration-thickness] hover:decoration-2 focus-visible:outline-papel">Accesibilidad</Link></li>
+            </ul>
+          </nav>
+        </div>
+      </footer>
     </div>
   )
 }

@@ -1,20 +1,19 @@
+import { lazy } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/layout/Layout'
-import { BaseTecnica } from './pages/BaseTecnica'
+const BaseTecnica = lazy(() => import('./pages/BaseTecnica').then(m => ({ default: m.BaseTecnica })))
 import { Inicio } from './pages/Inicio'
-import { NoEncontrada } from './pages/NoEncontrada'
-import { Registro } from './pages/Registro'
-import { Ingreso } from './pages/Ingreso'
-import { ElegirUsuario } from './pages/ElegirUsuario'
+const NoEncontrada = lazy(() => import('./pages/NoEncontrada').then(m => ({ default: m.NoEncontrada })))
+const Registro = lazy(() => import('./pages/Registro').then(m => ({ default: m.Registro })))
+const Ingreso = lazy(() => import('./pages/Ingreso').then(m => ({ default: m.Ingreso })))
+const ElegirUsuario = lazy(() => import('./pages/ElegirUsuario').then(m => ({ default: m.ElegirUsuario })))
 import { AuthProvider } from './context/AuthProvider'
-import { Panel } from './pages/Panel'
-import { Sala } from './pages/Sala'
-import { Perfil } from './pages/Perfil'
+const Panel = lazy(() => import('./pages/Panel').then(m => ({ default: m.Panel })))
+const Sala = lazy(() => import('./pages/Sala').then(m => ({ default: m.Sala })))
+const Perfil = lazy(() => import('./pages/Perfil').then(m => ({ default: m.Perfil })))
 import { RequierePerfil } from './components/auth/RequierePerfil'
-import {
-  Accesibilidad,
-  Ayuda,
-} from './pages/PaginasPendientes'
+const Accesibilidad = lazy(() => import('./pages/PaginasPendientes').then(m => ({ default: m.Accesibilidad })))
+const Ayuda = lazy(() => import('./pages/PaginasPendientes').then(m => ({ default: m.Ayuda })))
 
 export default function App() {
   return (
