@@ -9,6 +9,7 @@ import { Cargando, MensajeAviso, MensajeError } from '../components/common/Estad
 import { Tarjeta } from '../components/common/Tarjeta'
 import { AdministrarSala } from '../components/salas/AdministrarSala'
 import { useAuth } from '../context/auth'
+import { useHistorialChat } from '../hooks/useHistorialChat'
 import { useSala } from '../hooks/useSala'
 import { useSalaEnVivo } from '../hooks/useSalaEnVivo'
 
@@ -36,10 +37,11 @@ function SalaAbierta({ id }: { id: string | undefined }) {
     salio.current = true
     navegar('/dashboard', { replace: true, state: { avisoSala: { tipo: esAnfitrion ? 'eliminada-propia' : 'eliminada-por-anfitrion', nombre } } })
   }
-  const { estado: conexion, mensaje: mensajeConexion, participantes, mensajes, anuncios, enviarMensaje } = useSalaEnVivo(sala?.id, {
+  const { estado: conexion, mensaje: mensajeConexion, participantes, mensajes, anuncios, enviarMensaje, incorporarMensajes } = useSalaEnVivo(sala?.id, {
     alEliminarSala: volverAlPanelPorEliminacion,
     alActualizarNombre: nuevo => { if (sala) setCambio({ id: sala.id, nombre: nuevo }) },
   })
+  const historial = useHistorialChat(sala?.id, conexion, incorporarMensajes)
   return <section className="mx-auto max-w-6xl px-4 py-12">
     <ButtonLink to="/dashboard" variante="secundario">{sala && !error ? 'Salir de la sala' : 'Volver a mis salas'}</ButtonLink>
     {cargando ? <><h1 className="mt-8">Abriendo la sala</h1><div className="mt-6"><Cargando detalle="Estamos abriendo la sala." /></div></>
@@ -52,7 +54,7 @@ function SalaAbierta({ id }: { id: string | undefined }) {
           <p className="mt-3 text-bosque">{esAnfitrion ? 'Eres administrador de esta sala.' : 'Estás en esta sala como participante.'}</p>
           <AnunciosSala anuncios={anuncios} />
           <div className="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_21rem]">
-            <ChatSala mensajes={mensajes} estado={conexion} enviar={enviarMensaje} />
+            <ChatSala mensajes={mensajes} estado={conexion} enviar={enviarMensaje} historial={historial} />
             <aside aria-label="Participantes y acciones de la sala" className="space-y-6">
               <ListaParticipantes participantes={participantes} estado={conexion} miNombre={perfil?.username} />
               <Tarjeta>

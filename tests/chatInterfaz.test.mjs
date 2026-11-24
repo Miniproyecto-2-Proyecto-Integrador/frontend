@@ -11,7 +11,8 @@ const mensajes = [
   { id: 'a', salaId: 'Ab3_xY-9', autor: 'luis', texto: 'Hola, ¿empezamos?', creadoEn: '2026-11-23T15:00:00.000Z', esPropio: false },
   { id: 'b', salaId: 'Ab3_xY-9', autor: 'ana', texto: 'Sí, vamos', creadoEn: '2026-11-23T15:01:00.000Z', esPropio: true },
 ]
-const chat = (extra = {}) => renderToStaticMarkup(createElement(ChatSala, { mensajes, estado: 'conectada', enviar: async () => {}, ...extra }))
+const historial = { estado: 'listo', error: '', hayMas: false, cargandoMas: false, errorMas: '', aviso: '', reintentar() {}, cargarAnteriores: async () => ({ hayMas: false }) }
+const chat = (extra = {}) => renderToStaticMarkup(createElement(ChatSala, { mensajes, estado: 'conectada', enviar: async () => {}, historial, ...extra }))
 
 test('el chat muestra autor, hora y texto de cada mensaje y distingue los propios sin depender del color', () => {
   const html = chat()
