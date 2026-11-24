@@ -1,4 +1,4 @@
-import { CircleAlert, CircleCheck, LoaderCircle, Sprout } from 'lucide-react'
+import { CircleAlert, CircleCheck, Info, LoaderCircle, Sprout } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Button } from './Button'
 
@@ -36,6 +36,15 @@ export function MensajeExito({ children }: { children: ReactNode }) {
   return (
     <div role="status" className="aparecer flex items-start gap-3 rounded-2xl bg-exito-fondo p-4 text-exito">
       <CircleCheck aria-hidden="true" size={24} className="shrink-0" />
+      <p>{children}</p>
+    </div>
+  )
+}
+
+export function MensajeAviso({ children }: { children: ReactNode }) {
+  return (
+    <div role="status" className="aparecer flex items-start gap-3 rounded-2xl bg-aviso-fondo p-4 text-aviso">
+      <Info aria-hidden="true" size={24} className="shrink-0" />
       <p>{children}</p>
     </div>
   )
