@@ -81,7 +81,7 @@ export function AdministrarSala({ id, nombre, alActualizar, alEliminar }: {
     }
   }
 
-  return <Tarjeta className="mt-6">
+  return <Tarjeta>
     <h2>Administrar sala</h2>
     <p className="mt-3 text-texto-suave">Solo tú, como anfitrión, puedes cambiar el nombre o eliminar la sala.</p>
     {exito && <div className="mt-4"><MensajeExito>{exito}</MensajeExito></div>}
