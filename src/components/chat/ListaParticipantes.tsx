@@ -4,8 +4,8 @@ import type { Participante } from '../../types/chat'
 import { AvatarUsuario } from '../common/AvatarUsuario'
 import { Chip } from '../common/Chip'
 
-// Fondos oscuros de la paleta: el avatar (claro) y el nombre (papel) resaltan con contraste alto.
-const tonos = ['bg-primario', 'bg-acento', 'bg-bosque', 'bg-corteza']
+// Una sola familia de cafés: el avatar (claro) y el nombre (papel) resaltan con contraste alto sobre todos.
+const tonos = ['bg-cafe-medio', 'bg-acento', 'bg-corteza']
 function tonoDe(nombre: string) {
   let h = 0
   for (const c of nombre) h = (h * 31 + (c.codePointAt(0) ?? 0)) >>> 0
@@ -32,7 +32,7 @@ export function ListaParticipantes({ participantes, estado, miNombre, miAvatar }
         {participantes.map(p => {
           const esYo = p.nombre === miNombre
           const avatar = p.avatar ?? (esYo ? miAvatar : undefined)
-          return <li key={p.nombre} className={`relative flex min-h-36 min-w-0 items-center justify-center rounded-3xl border-2 ${esYo ? 'border-miel ring-4 ring-miel' : 'border-arena'} ${tonoDe(p.nombre)}`}>
+          return <li key={p.nombre} className={`relative flex min-h-36 min-w-0 items-center justify-center rounded-3xl ${p.esAnfitrion ? 'border-4 border-papel' : 'border-2 border-arena/70'} ${tonoDe(p.nombre)}`}>
             {avatar
               ? <AvatarUsuario valor={avatar} tamano="size-24 sm:size-32 lg:size-40" redondo borde="border-4 border-papel" />
               : <span aria-hidden="true" className="flex size-24 items-center justify-center rounded-full border-4 border-papel bg-arena font-titulo text-5xl font-extrabold text-bosque sm:size-32 sm:text-6xl lg:size-40">{p.nombre.slice(0, 1).toUpperCase()}</span>}

@@ -17,6 +17,9 @@
   --color-salvia: #cfe0c6;
   --color-musgo: #d6dcab;
   --color-terracota: #ecd0bd;
+  --color-cafesito: #425640;          /* verde cafesito: fondo de la sala */
+  --color-cafe-oscuro: #3a2515;       /* panel de participantes */
+  --color-cafe-medio: #6a4429;        /* recuadros de participantes */
   --color-bosque: #1f3d27;            /* verde muy oscuro para texto sobre hoja */
   --color-texto: #2b2118;
   --color-texto-suave: #5a4a3a;

@@ -1,12 +1,13 @@
-import { MessagesSquare, Settings } from 'lucide-react'
+import { MessagesSquare, Phone, Settings } from 'lucide-react'
 import { useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { AnunciosSala } from '../components/chat/AnunciosSala'
 import { ChatSala } from '../components/chat/ChatSala'
 import { ListaParticipantes } from '../components/chat/ListaParticipantes'
 import { Button, ButtonLink } from '../components/common/Button'
 import { CopiarIdSala } from '../components/common/CopiarIdSala'
 import { Cargando, MensajeAviso, MensajeError } from '../components/common/Estados'
+import { FondoSala } from '../components/layout/FondoSala'
 import { AdministrarSala } from '../components/salas/AdministrarSala'
 import { useAuth } from '../context/auth'
 import { useHistorialChat } from '../hooks/useHistorialChat'
@@ -15,7 +16,8 @@ import { useSalaEnVivo } from '../hooks/useSalaEnVivo'
 
 // US-08: la sala se consulta por ID a la API, sea propia o de otra persona. El rol lo decide el servidor.
 // US-10: dentro de la sala hay tres zonas: chat, participantes y acciones (compartir ID y, para el anfitrión, administrar).
-// Diseño: pantalla completa y oscura, como una videollamada: recuadros al centro, barra de controles abajo y chat al costado.
+// Diseño: pantalla completa, como una videollamada: recuadros al centro, barra de controles abajo y chat al costado.
+// Paleta de la sala: fondo verde cafesito con doodles, paneles en cafés y superficies crema.
 export function Sala() {
   const { id } = useParams()
   // Con «key» el estado de la sala (salida, nombre en vivo) no se arrastra al abrir otra sala.
@@ -45,17 +47,18 @@ function SalaAbierta({ id }: { id: string | undefined }) {
     alActualizarNombre: nuevo => { if (sala) setCambio({ id: sala.id, nombre: nuevo }) },
   })
   const historial = useHistorialChat(sala?.id, conexion, incorporarMensajes)
-  const salirComo = (clase: string) => <ButtonLink to="/dashboard" variante={sala && !error ? 'peligro' : 'secundario'} className={clase}>{sala && !error ? 'Salir de la sala' : 'Volver a mis salas'}</ButtonLink>
+  const volverAMisSalas = <ButtonLink to="/dashboard" variante="secundario">Volver a mis salas</ButtonLink>
   if (cargando || error || !sala) {
     return <section className="mx-auto max-w-3xl px-4 py-10">
-      {salirComo('')}
+      {volverAMisSalas}
       {cargando ? <><h1 className="mt-8 text-center">Abriendo la sala</h1><Cargando variante="pagina" detalle="Estamos abriendo la sala." /></>
         : <><h1 className="mt-8">{sinReintento ? 'Sala no disponible' : 'No pudimos abrir la sala'}</h1><div className="mt-6">{sinReintento
           ? <div role="alert" className="rounded-2xl bg-error-fondo p-4 text-error">{error}</div>
           : <MensajeError mensaje={error} onReintentar={reintentar} />}</div></>}
     </section>
   }
-  return <section className="zona-oscura flex h-dvh min-h-[34rem] flex-col gap-3 bg-corteza p-3 text-papel sm:p-4">
+  return <section className="zona-oscura relative isolate flex h-dvh min-h-[34rem] flex-col gap-3 overflow-hidden bg-cafesito p-3 text-papel sm:p-4">
+    <FondoSala />
     <header className="zona-clara flex flex-wrap items-center justify-between gap-x-6 gap-y-3 rounded-2xl bg-papel px-4 py-3 text-texto shadow-papel">
       <div className="min-w-0">
         <h1 className="entrada break-words text-[clamp(1.35rem,1.1rem+0.9vw,1.9rem)]">{nombre}</h1>
@@ -70,7 +73,7 @@ function SalaAbierta({ id }: { id: string | undefined }) {
     {conexion === 'sin-conexion' && <MensajeAviso>{mensajeConexion} Si te pierdes un cambio de la sala, recarga la página.</MensajeAviso>}
     <AnunciosSala anuncios={anuncios} />
     <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[minmax(0,1fr)_24rem] xl:grid-cols-[minmax(0,1fr)_26rem]">
-      <div className="min-h-0 overflow-y-auto rounded-3xl bg-texto p-3 sm:p-4">
+      <div className="min-h-0 overflow-y-auto rounded-3xl border border-papel/15 bg-cafe-oscuro p-3 shadow-papel sm:p-4">
         <ListaParticipantes participantes={participantes} estado={conexion} miNombre={perfil?.username} miAvatar={perfil?.avatar} />
       </div>
       <div id="panel-chat" className={`zona-clara max-lg:fixed max-lg:inset-x-3 max-lg:top-20 max-lg:bottom-36 max-lg:z-30 max-lg:transition-[opacity,translate,visibility] max-lg:duration-200 max-lg:ease-out motion-reduce:transition-none lg:min-h-0 ${chatAbierto ? '' : 'max-lg:invisible max-lg:translate-y-4 max-lg:opacity-0'}`}>
@@ -91,7 +94,10 @@ function SalaAbierta({ id }: { id: string | undefined }) {
             alEliminar={volverAlPanelPorEliminacion} />
         </div>
       </details>}
-      {salirComo('')}
+      <Link to="/dashboard" aria-label="Salir de la sala" title="Salir de la sala"
+        className="inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-error text-white shadow-boton transition-[background-color,scale] duration-200 ease-(--ease-salida) hover:bg-red-800 motion-safe:active:scale-[0.96] motion-reduce:transition-none">
+        <Phone aria-hidden="true" size={22} className="rotate-[135deg]" fill="currentColor" />
+      </Link>
     </div>
   </section>
 }
