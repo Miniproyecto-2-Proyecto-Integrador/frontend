@@ -97,6 +97,14 @@
     outline: 3px solid var(--color-primario-oscuro);
     outline-offset: 3px;
   }
+  /* Sobre fondo café oscuro (sala) el contorno verde no se vería: se usa papel (≈10:1). Las superficies claras anidadas
+     (chat, ventanas) vuelven al verde; esa regla va después para ganar en el anidamiento. */
+  .zona-oscura :focus-visible {
+    outline-color: var(--color-papel);
+  }
+  .zona-clara :focus-visible {
+    outline-color: var(--color-primario-oscuro);
+  }
 }
 
 @layer components {

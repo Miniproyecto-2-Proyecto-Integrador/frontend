@@ -246,7 +246,7 @@ export function Registro() {
           ? <Button className="mt-3" onClick={() => void reintentarConsulta()} disabled={ocupado}>Reintentar</Button>
           : <Button className="mt-3" onClick={() => window.location.reload()} disabled={ocupado}>Reintentar</Button>}
       </div>}
-      {estado === 'cargando' && !enviando && <div className="mb-6"><Cargando detalle="Estamos comprobando tu sesión y tu perfil. Conservamos los datos escritos." /></div>}
+      {estado === 'cargando' && !enviando && <div className="mb-6"><Cargando variante="compacto" detalle="Estamos comprobando tu sesión y tu perfil. Conservamos los datos escritos." /></div>}
       {mensaje && <div ref={alerta} tabIndex={-1} role="alert" className="mb-6 rounded-xl bg-error-fondo p-4 text-error">{mensaje}</div>}
       <form ref={formulario} noValidate onSubmit={enviar} aria-busy={enviando} className="space-y-6"
         onKeyDown={evento => {
@@ -271,7 +271,7 @@ export function Registro() {
             <button type="button" aria-controls="password" aria-pressed={visible} aria-label={visible ? 'Ocultar contraseña' : 'Mostrar contraseña'} onClick={() => setVisible(valor => !valor)} className="absolute inset-y-0 right-1 inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl px-3 text-bosque" disabled={enviando}>{visible ? <Eye aria-hidden="true" size={20} /> : <EyeOff aria-hidden="true" size={20} />}</button>
           </CampoFormulario>
         </>}
-        {enviando && <Cargando detalle="Estamos guardando tu cuenta y comprobando tu perfil." />}
+        {enviando && <Cargando variante="compacto" detalle="Estamos guardando tu cuenta y comprobando tu perfil." />}
         <div className="flex flex-col gap-3 sm:flex-row">
           {pasoActual > 1 && <Button type="button" variante="secundario" disabled={ocupado} onClick={retroceder}>Anterior</Button>}
           {ultimoPaso

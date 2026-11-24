@@ -29,7 +29,7 @@ export function DialogoEliminarCuenta({ ocupado, error, cancelar, confirmar }: {
       </ul>
     </div>
     {error && <p ref={alerta} tabIndex={-1} role="alert" className="mt-4 rounded-xl bg-error-fondo p-4 text-error">{error}</p>}
-    {ocupado && <div className="mt-4"><Cargando detalle="Estamos eliminando tu cuenta." /></div>}
+    {ocupado && <div className="mt-4"><Cargando variante="compacto" detalle="Estamos eliminando tu cuenta." /></div>}
     <div className="mt-6 flex flex-wrap gap-3">
       <Button variante="secundario" disabled={ocupado} onClick={cancelar}>Cancelar</Button>
       <Button variante="peligro" disabled={ocupado} onClick={confirmar}>{ocupado ? 'Eliminando…' : 'Sí, eliminar mi cuenta'}</Button>

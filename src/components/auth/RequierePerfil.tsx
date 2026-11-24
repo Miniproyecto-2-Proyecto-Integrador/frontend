@@ -13,8 +13,8 @@ export function RequierePerfil({ children, cierreEnCurso = false }: { children: 
   const cierreGlobal = useOutletContext<{ cierreEnCurso?: boolean } | undefined>()?.cierreEnCurso
   const destino = destinoSeguro(location.pathname + location.search + location.hash)
   // Solo carga: no mostrar contenido privado ni redirigir mientras el Panel espera signOut.
-  if (cierreEnCurso || cerrandoSesion || cierreGlobal) return <Cargando detalle="Estamos cerrando tu sesión." />
-  if (estado === 'cargando') return <Cargando detalle="Estamos comprobando tu sesión y tu perfil." />
+  if (cierreEnCurso || cerrandoSesion || cierreGlobal) return <Cargando variante="pagina" detalle="Estamos cerrando tu sesión." />
+  if (estado === 'cargando') return <Cargando variante="pagina" detalle="Estamos comprobando tu sesión y tu perfil." />
   if (estado === 'error') return <MensajeError mensaje={error} onReintentar={() => {
     if (usuario) void actualizarPerfil().catch(() => {})
     else window.location.reload()

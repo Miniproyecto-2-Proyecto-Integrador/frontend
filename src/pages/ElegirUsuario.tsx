@@ -21,7 +21,7 @@ export function ElegirUsuario() {
   const destino = destinoDelEstado(useLocation().state)
   const { usuario, estado, error } = useAuth()
   if (!usuario) {
-    if (estado === 'cargando') return <Cargando detalle="Estamos restaurando tu sesión." />
+    if (estado === 'cargando') return <Cargando variante="pagina" detalle="Estamos restaurando tu sesión." />
     if (estado === 'error') return <MensajeError mensaje={error} onReintentar={() => window.location.reload()} />
     return <Navigate to="/ingresar" state={{ from: destino }} replace />
   }
@@ -128,7 +128,7 @@ function FormularioPerfilGoogle({ usuario }: { usuario: User }) {
       {!usuario.email && <p role="alert" className="mb-6 rounded-xl bg-aviso-fondo p-4 text-aviso">
         No podemos completar el perfil sin un correo en la identidad autenticada. Cambia de cuenta o contacta al equipo.
       </p>}
-      {estado === 'cargando' && <div className="mb-6"><Cargando detalle="Estamos comprobando tu perfil. Conservamos lo que escribiste." /></div>}
+      {estado === 'cargando' && <div className="mb-6"><Cargando variante="compacto" detalle="Estamos comprobando tu perfil. Conservamos lo que escribiste." /></div>}
       {estado === 'error' && <div ref={alerta} tabIndex={-1} role="alert" className="mb-6 rounded-xl bg-error-fondo p-4 text-error">
         <p>{error}</p><p className="mt-2">Debemos recuperar la consulta antes de guardar tu perfil.</p>
         <Button className="mt-3" onClick={() => void reintentar()} disabled={ocupado}>Reintentar</Button>
@@ -146,7 +146,7 @@ function FormularioPerfilGoogle({ usuario }: { usuario: User }) {
           value={datos.username} error={errores.username} onChange={e => dispatch({ tipo: 'editar', campo: 'username', valor: e.target.value })} />
         <SelectorAvatar valor={datos.avatar} error={errores.avatar} disabled={ocupado}
           onChange={valor => dispatch({ tipo: 'editar', campo: 'avatar', valor })} />
-        {ocupado && <Cargando detalle="Estamos procesando tu solicitud." />}
+        {ocupado && <Cargando variante="compacto" detalle="Estamos procesando tu solicitud." />}
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button type="submit" disabled={bloqueado} className="flex-1">Completar registro</Button>
           <Button variante="secundario" disabled={ocupado || googleActivo} onClick={() => void salir()}>Cambiar de cuenta</Button>

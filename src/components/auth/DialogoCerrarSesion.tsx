@@ -21,7 +21,7 @@ export function DialogoCerrarSesion({ ocupado, error, cancelar, confirmar }: {
     <h2 id="cerrar-sesion-titulo">¿Deseas cerrar sesión?</h2>
     <p id="cerrar-sesion-detalle" className="mt-3">Tendrás que iniciar sesión de nuevo para acceder a tus salas.</p>
     {error && <p ref={alerta} tabIndex={-1} role="alert" className="mt-4 rounded-xl bg-error-fondo p-4 text-error">{error}</p>}
-    {ocupado && <div className="mt-4"><Cargando detalle="Estamos cerrando tu sesión." /></div>}
+    {ocupado && <div className="mt-4"><Cargando variante="compacto" detalle="Estamos cerrando tu sesión." /></div>}
     <div className="mt-6 flex flex-wrap gap-3">
       <Button variante="secundario" disabled={ocupado} onClick={cancelar}>Cancelar</Button>
       <Button disabled={ocupado} onClick={confirmar}>{ocupado ? 'Cerrando sesión…' : 'Cerrar sesión'}</Button>

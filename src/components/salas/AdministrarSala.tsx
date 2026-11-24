@@ -92,7 +92,7 @@ export function AdministrarSala({ id, nombre, alActualizar, alEliminar }: {
         onChange={evento => { setValor(evento.target.value); setErrorNombre('') }} error={errorNombre}
         ayuda="Entre 1 y 80 caracteres. Pulsa Esc para cancelar." />
       {errorEdicion && <div ref={alerta} tabIndex={-1} role="alert" className="rounded-2xl bg-error-fondo p-4 text-error">{errorEdicion}</div>}
-      {guardando && <Cargando detalle="Estamos guardando el nombre." />}
+      {guardando && <Cargando variante="compacto" detalle="Estamos guardando el nombre." />}
       <div className="flex flex-wrap gap-3">
         <Button type="submit" disabled={guardando}>{guardando ? 'Guardando…' : 'Guardar cambios'}</Button>
         <Button variante="secundario" disabled={guardando} onClick={cancelarEdicion}>Cancelar</Button>

@@ -36,17 +36,18 @@ export function FormularioMensaje({ enviar }: { enviar: (texto: string) => Promi
     if (evento.key === 'Enter' && !evento.shiftKey && !evento.nativeEvent.isComposing) { evento.preventDefault(); void enviarTexto() }
   }
 
-  return <form onSubmit={alEnviar} noValidate className="mt-4">
-    <label htmlFor="mensaje-chat" className="mb-2 block font-bold">Escribe un mensaje</label>
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+  return <form onSubmit={alEnviar} noValidate className="border-t border-borde-tarjeta p-3">
+    <label htmlFor="mensaje-chat" className="sr-only">Escribe un mensaje</label>
+    <div className="flex items-end gap-2">
       <textarea id="mensaje-chat" ref={campo} rows={2} value={texto} onChange={e => { setTexto(e.target.value); if (error) setError('') }} onKeyDown={alTeclear}
         aria-invalid={error ? true : undefined} aria-describedby={error ? 'mensaje-chat-ayuda mensaje-chat-error' : 'mensaje-chat-ayuda'}
-        className={`min-h-16 w-full resize-y rounded-xl border bg-papel px-3 py-3 text-base transition-[border-color] duration-200 hover:border-primario focus:border-primario motion-reduce:transition-none ${error ? 'border-2 border-error' : 'border-borde'}`} />
-      <Button type="submit" aria-disabled={enviando || undefined} className="sm:shrink-0">
-        <SendHorizontal aria-hidden="true" size={20} />{enviando ? 'Enviando…' : 'Enviar'}
+        placeholder="Escribe un mensaje"
+        className={`field-sizing-content max-h-40 min-h-12 w-full resize-none rounded-2xl border bg-papel px-4 py-3 text-base placeholder:text-texto-suave transition-[border-color] duration-200 hover:border-primario focus:border-primario motion-reduce:transition-none ${error ? 'border-2 border-error' : 'border-borde'}`} />
+      <Button type="submit" aria-disabled={enviando || undefined} className="size-12 shrink-0 rounded-full! px-0!">
+        <SendHorizontal aria-hidden="true" size={20} /><span className="sr-only">{enviando ? 'Enviando…' : 'Enviar'}</span>
       </Button>
     </div>
-    <p id="mensaje-chat-ayuda" className="mt-2 text-sm text-texto-suave">Enter envía el mensaje. Mayús + Enter agrega una línea nueva.</p>
-    <p id="mensaje-chat-error" role="alert" className={error ? 'mt-2 font-bold text-error' : 'sr-only'}>{error}</p>
+    <p id="mensaje-chat-ayuda" className="mt-2 px-1 text-sm text-texto-suave">Enter envía el mensaje. Mayús + Enter agrega una línea nueva.</p>
+    <p id="mensaje-chat-error" role="alert" className={error ? 'mt-2 px-1 font-bold text-error' : 'sr-only'}>{error}</p>
   </form>
 }

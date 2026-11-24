@@ -66,29 +66,27 @@ export function ListaMensajes({ mensajes, historial }: { mensajes: Mensaje[]; hi
     if (!hayMas) contenedor.current?.focus()
   }
 
-  return <div>
-    {historial.estado === 'listo' && historial.hayMas && <div className="mb-3 flex flex-wrap items-center gap-3">
+  return <div className="flex min-h-0 flex-1 flex-col">
+    {historial.estado === 'listo' && historial.hayMas && <div className="flex flex-wrap items-center justify-center gap-3 px-4 pt-3">
       <Button variante="secundario" onClick={() => void cargarAnteriores()} aria-disabled={historial.cargandoMas || undefined}>
         <History aria-hidden="true" size={20} />{historial.cargandoMas ? 'Cargando…' : 'Cargar mensajes anteriores'}
       </Button>
       {historial.errorMas && <p role="alert" className="font-bold text-error">{historial.errorMas}</p>}
     </div>}
     <p role="status" className="sr-only">{historial.aviso}</p>
-    <div className="relative">
+    <div className="relative min-h-0 flex-1">
     <div ref={contenedor} role="region" aria-label="Mensajes de la sala" tabIndex={0} onScroll={alDesplazar}
-      className="h-[22rem] overflow-y-auto rounded-2xl border border-borde-tarjeta bg-fondo p-3 sm:h-[26rem] lg:h-[30rem]">
+      className="absolute inset-0 overflow-y-auto px-3 py-3">
       {historial.estado === 'cargando' && mensajes.length === 0 && <Cargando detalle="Estamos trayendo los mensajes de la sala." />}
       {historial.estado === 'error' && <div className="mb-3"><MensajeError mensaje={historial.error} onReintentar={historial.reintentar} /></div>}
       {historial.estado === 'listo' && mensajes.length === 0 && <EstadoVacio mensaje="Aún no hay mensajes en esta sala. Escribe el primero para saludar a tu grupo." />}
-      {mensajes.length > 0 && <ol className="space-y-3">
-          {mensajes.map(m => <li key={m.id} className={`flex ${m.esPropio ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[90%] rounded-2xl px-4 py-2 sm:max-w-[80%] ${m.esPropio ? 'bg-hoja-suave text-bosque' : 'border border-borde-tarjeta bg-papel text-texto'}`}>
+      {mensajes.length > 0 && <ol className="space-y-1">
+          {mensajes.map(m => <li key={m.id} className={`rounded-2xl px-3 py-2 ${m.esPropio ? 'bg-hoja-claro' : ''}`}>
               <p className="flex flex-wrap items-baseline gap-x-2">
-                <strong className="break-all">{m.esPropio ? 'Tú' : m.autor}</strong>
+                <strong className={`break-all ${m.esPropio ? 'text-bosque' : ''}`}>{m.esPropio ? 'Tú' : m.autor}</strong>
                 <time dateTime={m.creadoEn} className="numeros text-sm text-texto-suave">{formatearMomento(m.creadoEn)}</time>
               </p>
               <p className="whitespace-pre-wrap break-words">{m.texto}</p>
-            </div>
           </li>)}
         </ol>}
     </div>
