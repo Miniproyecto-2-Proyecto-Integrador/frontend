@@ -25,7 +25,7 @@ export function esMensaje(valor: unknown): valor is Mensaje {
 export function esParticipante(valor: unknown): valor is Participante {
   if (!valor || typeof valor !== 'object') return false
   const p = valor as Record<string, unknown>
-  return typeof p.nombre === 'string' && p.nombre !== '' && typeof p.esAnfitrion === 'boolean'
+  return typeof p.nombre === 'string' && p.nombre !== '' && typeof p.esAnfitrion === 'boolean' && (p.avatar === undefined || typeof p.avatar === 'string')
 }
 
 export function esCambioPresencia(valor: unknown): valor is CambioPresencia {

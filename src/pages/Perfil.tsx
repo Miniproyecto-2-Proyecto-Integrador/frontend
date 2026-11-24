@@ -76,7 +76,7 @@ function EditorPerfil({ inicial }: { inicial: DatosGuardados }) {
         <div className="grid gap-5 sm:grid-cols-2">{campos.map(campo => <CampoFormulario key={campo} id={`perfil-${campo}`} etiqueta={{ nombres: 'Nombres', apellidos: 'Apellidos', username: 'Nombre de usuario', correo: 'Correo electrónico' }[campo]} type={campo === 'correo' ? 'email' : 'text'} autoComplete={{ nombres: 'given-name', apellidos: 'family-name', username: 'username', correo: 'email' }[campo]} value={datos[campo]} onChange={e => cambiar(campo, e.target.value)} error={errores[campo]} maxLength={campo === 'username' ? 20 : campo === 'correo' ? 254 : 50} disabled={!editando || ocupado} required ayuda={campo === 'username' ? 'Entre 3 y 20 letras, números o guion bajo.' : campo === 'correo' ? 'Si cambias el correo, te pediremos iniciar sesión de nuevo.' : undefined} />)}</div>
         {editando && <SelectorAvatar valor={datos.avatar} onChange={valor => cambiar('avatar', valor)} disabled={ocupado} error={errores.avatar} />}
         {error && <p ref={alerta} tabIndex={-1} role="alert" className="rounded-xl bg-error-fondo p-4 text-error">{error}</p>}
-        {modificandoCuenta && <Cargando detalle="Estamos guardando tu perfil." />}
+        {modificandoCuenta && <Cargando variante="compacto" detalle="Estamos guardando tu perfil." />}
         {editando && <div className="flex flex-wrap gap-3"><Button type="submit" disabled={ocupado}>Guardar cambios</Button><Button variante="secundario" disabled={ocupado} onClick={() => {
           setDatos(perfil ?? inicial); setErrores({}); setError(''); setEditando(false); setAviso('Se descartaron los cambios sin guardar.')
           requestAnimationFrame(() => botonEditar.current?.focus())

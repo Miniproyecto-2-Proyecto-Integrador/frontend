@@ -29,10 +29,10 @@ function renderizar(componente, cambios = {}) {
   ))
 }
 
-test('Google pendiente muestra cuatro campos, seis avatares y la identidad solo como referencia', () => {
+test('Google pendiente muestra cuatro campos, cuatro avatares y la identidad solo como referencia', () => {
   const html = renderizar(createElement(ElegirUsuario))
   for (const campo of ['nombres', 'apellidos', 'username']) assert.match(html, new RegExp(`id="${campo}"`))
-  assert.equal((html.match(/type="radio"/g) ?? []).length, 6)
+  assert.equal((html.match(/type="radio"/g) ?? []).length, 4)
   assert.match(html, /Nombre sin dividir/)
   assert.match(html, /google@example.com/)
   assert.doesNotMatch(html, /id="correo"|id="password"|autoComplete="new-password"/)

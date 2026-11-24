@@ -16,6 +16,8 @@ export function Layout() {
   const { cerrarSesion, eliminarCuenta } = useAuth()
   const navegar = useNavigate()
   const location = useLocation()
+  // La sala ocupa toda la pantalla (como una videollamada): sin encabezado, fondo decorativo ni pie.
+  const enSala = /^\/salas\/[^/]+\/?$/.test(location.pathname)
   const [{ abierto: dialogoAbierto, cerrando, error }, dispatch] = useReducer(reducirCierre, cierreInicial)
   const bloqueo = useRef(false)
   const activador = useRef<HTMLButtonElement | null>(null)
@@ -65,12 +67,12 @@ export function Layout() {
     <div className="relative isolate flex min-h-screen flex-col">
       <SkipLink />
 
-      <FondoNaturaleza />
+      {!enSala && <FondoNaturaleza />}
 
-      <Encabezado cerrando={cerrando || eliminacion.cerrando} onCerrarSesion={boton => {
+      {!enSala && <Encabezado cerrando={cerrando || eliminacion.cerrando} onCerrarSesion={boton => {
         activador.current = boton
         dispatch({ tipo: 'abrir' })
-      }} />
+      }} />}
       {dialogoAbierto && <DialogoCerrarSesion ocupado={cerrando} error={error} cancelar={cancelar} confirmar={() => void confirmar()} />}
 
       {eliminacion.abierto && <DialogoEliminarCuenta ocupado={eliminacion.cerrando} error={eliminacion.error} cancelar={cancelarEliminar} confirmar={() => void confirmarEliminar()} />}
@@ -78,7 +80,7 @@ export function Layout() {
       <main id="contenido" tabIndex={-1} className="flex-1 focus:outline-none">
         {location.state?.sesionCerrada === true && <div className="mx-auto mt-6 max-w-3xl px-4"><MensajeExito>Sesión cerrada correctamente.</MensajeExito></div>}
         {location.state?.cuentaEliminada === true && <div className="mx-auto mt-6 max-w-3xl px-4"><MensajeExito>Tu cuenta se eliminó correctamente.</MensajeExito></div>}
-        <Suspense fallback={<div className="mx-auto max-w-3xl px-4 py-12"><Cargando /></div>}>
+        <Suspense fallback={<div className="mx-auto max-w-3xl px-4"><Cargando variante="pagina" /></div>}>
           <Outlet context={{
             cierreEnCurso: cerrando || eliminacion.cerrando,
             abrirEliminarCuenta: (boton: HTMLButtonElement) => {
@@ -89,7 +91,7 @@ export function Layout() {
         </Suspense>
       </main>
 
-      <footer className="mt-16 bg-corteza text-papel">
+      {!enSala && <footer className="mt-16 bg-corteza text-papel">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="flex items-center gap-3 font-titulo text-xl font-bold">
             <LogoArbol className="size-9 shrink-0" />
@@ -103,7 +105,7 @@ export function Layout() {
             </ul>
           </nav>
         </div>
-      </footer>
+      </footer>}
     </div>
   )
 }

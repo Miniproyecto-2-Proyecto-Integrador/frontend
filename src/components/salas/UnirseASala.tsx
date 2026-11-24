@@ -43,21 +43,21 @@ export function UnirseASala({ deshabilitado = false }: { deshabilitado?: boolean
     }
   }
 
-  return <Tarjeta>
-    <div className="flex items-start gap-3">
-      <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-arena text-acento"><DoorOpen size={20} /></span>
+  return <Tarjeta className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-12 lg:p-8">
+    <div className="flex items-start gap-4">
+      <span aria-hidden="true" className="flex size-12 shrink-0 items-center justify-center rounded-full bg-arena text-acento"><DoorOpen size={24} /></span>
       <div>
         <h2 id="unirse-titulo">Unirme a una sala</h2>
         <p className="mt-1 text-texto-suave">Pega el ID que te compartió tu compañero o compañera.</p>
       </div>
     </div>
-    <form ref={campo} aria-labelledby="unirse-titulo" className="mt-5 space-y-4" noValidate aria-busy={uniendo} onSubmit={evento => void enviar(evento)}>
+    <form ref={campo} aria-labelledby="unirse-titulo" className="space-y-4" noValidate aria-busy={uniendo} onSubmit={evento => void enviar(evento)}>
       <CampoFormulario id="unirse-id-sala" etiqueta="ID de la sala" value={id} autoComplete="off" autoCapitalize="none" spellCheck={false}
         onChange={evento => { setId(evento.target.value); setErrorId('') }} error={errorId}
         ayuda="8 caracteres entre letras, números, guion o guion bajo. Los espacios al inicio o al final se ignoran."
         required disabled={ocupado} />
       {errorApi && <div ref={alerta} tabIndex={-1} role="alert" className="rounded-2xl bg-error-fondo p-4 text-error">{errorApi}</div>}
-      {uniendo && <Cargando detalle="Estamos buscando la sala." />}
+      {uniendo && <Cargando variante="compacto" detalle="Estamos buscando la sala." />}
       <Button type="submit" disabled={ocupado}>{uniendo ? 'Buscando sala…' : 'Unirme a la sala'}</Button>
     </form>
   </Tarjeta>

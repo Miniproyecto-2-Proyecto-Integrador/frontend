@@ -74,7 +74,7 @@ test('perfil pendiente permite completar datos sin volver a pedir credenciales',
   assert.match(html, /id="nombres"/)
   assert.match(html, /id="apellidos"/)
   assert.match(html, /id="username"/)
-  assert.equal((html.match(/type="radio"/g) ?? []).length, 6)
+  assert.equal((html.match(/type="radio"/g) ?? []).length, 4)
   assert.doesNotMatch(html, /Acceso<\/span>/)
 })
 
@@ -85,7 +85,7 @@ test('Tu perfil muestra sus cuatro campos y el contador de dos pasos, sin creden
   assert.match(html, /id="nombres"/)
   assert.match(html, /id="apellidos"/)
   assert.match(html, /id="username"/)
-  assert.equal((html.match(/type="radio"/g) ?? []).length, 6)
+  assert.equal((html.match(/type="radio"/g) ?? []).length, 4)
   assert.doesNotMatch(html, /id="correo"|id="password"/)
   assert.doesNotMatch(html, /type="submit"/)
   assert.match(html, /Tu perfil/)
@@ -163,8 +163,8 @@ test('los errores de campo y avatar se asocian a sus controles', () => {
   const avatar = renderToStaticMarkup(createElement(SelectorAvatar, {
     valor: 'avatar2', onChange() {}, error: 'Elige un avatar.', disabled: false,
   }))
-  assert.equal((avatar.match(/type="radio"/g) ?? []).length, 6)
-  assert.equal((avatar.match(/aria-describedby="avatar-error"/g) ?? []).length, 7)
+  assert.equal((avatar.match(/type="radio"/g) ?? []).length, 4)
+  assert.equal((avatar.match(/aria-describedby="avatar-error"/g) ?? []).length, 5)
   assert.match(avatar, /checked="" value="avatar2"/)
 })
 
@@ -192,4 +192,12 @@ test('200 con data null permite completar el perfil; respuestas incompletas no',
   }
   fetchMock.mock.mockImplementation(async () => new Response(JSON.stringify({ success: false, message: 'Ruta inexistente' }), { status: 404 }))
   await assert.rejects(consultarPerfil(usuario), error => error.status === 404)
+})
+
+test('el selector ofrece los avatares disponibles y no marca la opción con chulo', () => {
+  const html = renderToStaticMarkup(createElement(SelectorAvatar, { valor: 'avatar2', onChange() {}, disabled: false }))
+  assert.equal((html.match(/type="radio"/g) ?? []).length, 4)
+  assert.doesNotMatch(html, /✓/)
+  assert.doesNotMatch(html, /type="file"/)
+  assert.match(html, /Yuca asada/)
 })

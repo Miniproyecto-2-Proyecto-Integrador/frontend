@@ -15,7 +15,7 @@ export function BotonGoogle({ disabled = false }: { disabled?: boolean }) {
       </svg>
       {googleActivo ? 'Conectando con Google…' : 'Continuar con Google'}
     </Button>
-    {googleActivo && <Cargando detalle="Completa el acceso en Google; después comprobaremos tu perfil." />}
+    {googleActivo && <Cargando variante="compacto" detalle="Completa el acceso en Google; después comprobaremos tu perfil." />}
     {avisoGoogle && <p role={avisoGoogle.tipo === 'cancelacion' ? 'status' : 'alert'}
       className={avisoGoogle.tipo === 'cancelacion' ? 'text-texto-suave' : 'rounded-xl bg-error-fondo p-4 text-error'}>
       {avisoGoogle.mensaje}
