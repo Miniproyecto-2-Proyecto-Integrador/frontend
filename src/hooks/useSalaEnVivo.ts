@@ -63,5 +63,8 @@ export function useSalaEnVivo(idSala: string | undefined, eventos: Pick<EventosS
     return mensaje
   }, [anunciar])
 
-  return { ...conexion, participantes, mensajes, anuncios, enviarMensaje }
+  // US-11: el historial que entrega la API se une a los mensajes en vivo sin duplicar y sin anunciarse.
+  const incorporarMensajes = useCallback((nuevos: Mensaje[]) => setMensajes(previos => fusionarMensajes(previos, nuevos)), [])
+
+  return { ...conexion, participantes, mensajes, anuncios, enviarMensaje, incorporarMensajes }
 }
