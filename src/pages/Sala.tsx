@@ -17,8 +17,8 @@ export function Sala() {
           No encontramos esta sala entre tus salas propias. Vuelve a Mis salas y revisa su ID.
         </div>
           : <>
-            <h1 className="mt-8 break-words">{sala.nombre}</h1>
-            <p className="mt-3 text-azul-texto">Eres administrador de esta sala.</p>
+            <h1 className="entrada mt-8 break-words">{sala.nombre}</h1>
+            <p className="mt-3 text-bosque">Eres administrador de esta sala.</p>
             <Tarjeta className="mt-6">
               <h2>Comparte tu sala</h2>
               <p className="mt-3 mb-4 text-texto-suave">Copia el ID para compartirlo con tus compañeros.</p>

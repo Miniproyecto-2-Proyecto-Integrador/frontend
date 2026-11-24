@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Plus } from 'lucide-react'
+import { Leaf, Plus } from 'lucide-react'
 import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/auth'
@@ -69,7 +69,7 @@ function MisSalas() {
   }
 
   return <section className="mx-auto max-w-5xl px-4 py-12">
-    <h1>Salas</h1>
+    <div className="entrada"><h1>Salas</h1></div>
     {perfil && <div className="mt-6 flex items-center gap-4">
       <AvatarUsuario valor={perfil.avatar} />
       <p className="min-w-0 break-words text-xl">Hola, {perfil.nombres}.</p>
@@ -107,10 +107,13 @@ function MisSalas() {
             </Button>
           </EstadoVacio>
           : <ul className="grid gap-5 sm:grid-cols-2">
-            {salas.map(sala => <li key={sala.id} className="min-w-0">
+            {salas.map(sala => <li key={sala.id} className="min-w-0 transition-transform duration-300 ease-(--ease-salida) motion-safe:hover:-translate-y-0.5">
               <Tarjeta className="h-full">
-                <h3 className="break-words text-xl font-bold">{sala.nombre}</h3>
-                <p className="mt-2 mb-4 text-sm text-azul-texto">Administrador</p>
+                <div className="flex items-start gap-3">
+                  <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-hoja-suave text-primario"><Leaf size={20} /></span>
+                  <h3 className="min-w-0 break-words text-xl font-bold">{sala.nombre}</h3>
+                </div>
+                <p className="mt-2 mb-4 text-sm text-bosque">Administrador</p>
                 <CopiarIdSala id={sala.id} />
                 <ButtonLink className="mt-4" to={`/salas/${encodeURIComponent(sala.id)}`}>Entrar a la sala</ButtonLink>
               </Tarjeta>

@@ -12,7 +12,7 @@ export function BaseTecnica() {
 
   return (
     <section className="mx-auto max-w-3xl px-4 py-12">
-      <h1>Base técnica</h1>
+      <h1 className="entrada">Base técnica</h1>
       <p className="mt-2 text-lg text-texto-suave">
         Esta pantalla consulta al servidor (API), que lee la colección «pruebas» de Firestore.
       </p>

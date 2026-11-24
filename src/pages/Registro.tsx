@@ -21,7 +21,7 @@ import { esUsuarioGoogle } from '../services/googleAuth'
 import { destinoDelEstado } from '../services/destinoSeguro'
 
 export function ContadorPaso({ actual, total }: { actual: PasoRegistro; total: 1 | 2 }) {
-  return <p className="whitespace-nowrap pt-1 font-bold text-azul-texto">{total === 1 ? 'Completar perfil' : `Paso ${actual} de ${total}`}</p>
+  return <p className="whitespace-nowrap pt-1 font-bold text-bosque">{total === 1 ? 'Completar perfil' : `Paso ${actual} de ${total}`}</p>
 }
 
 export function BotonSiguiente({ disabled, avanzar }: { disabled: boolean; avanzar: () => void }) {
@@ -222,7 +222,7 @@ export function Registro() {
   }
 
   return <section className="mx-auto max-w-2xl px-4 py-12">
-    <h1 className="text-center">Crear cuenta</h1>
+    <h1 className="entrada text-center">Crear cuenta</h1>
     <p className="mt-3 text-center text-lg text-texto-suave">Prepárate para estudiar y compartir con tus compañeros.</p>
     <Tarjeta className="mt-6">
       <div className="mb-6 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
@@ -268,7 +268,7 @@ export function Registro() {
         {pasoActual === 2 && <>
           <CampoFormulario id="correo" etiqueta="Correo electrónico" type="email" autoComplete="email" required value={datos.correo} onChange={e => cambiar('correo', e.target.value)} error={errores.correo} disabled={enviando} />
           <CampoFormulario id="password" etiqueta="Contraseña" type={visible ? 'text' : 'password'} autoComplete="new-password" required value={datos.password} onChange={e => cambiar('password', e.target.value)} error={errores.password} ayuda="Al menos ocho caracteres, una letra y un número." disabled={enviando}>
-            <button type="button" aria-controls="password" aria-pressed={visible} aria-label={visible ? 'Ocultar contraseña' : 'Mostrar contraseña'} onClick={() => setVisible(valor => !valor)} className="absolute inset-y-0 right-1 inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl px-3 text-azul-texto" disabled={enviando}>{visible ? <Eye aria-hidden="true" size={20} /> : <EyeOff aria-hidden="true" size={20} />}</button>
+            <button type="button" aria-controls="password" aria-pressed={visible} aria-label={visible ? 'Ocultar contraseña' : 'Mostrar contraseña'} onClick={() => setVisible(valor => !valor)} className="absolute inset-y-0 right-1 inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl px-3 text-bosque" disabled={enviando}>{visible ? <Eye aria-hidden="true" size={20} /> : <EyeOff aria-hidden="true" size={20} />}</button>
           </CampoFormulario>
         </>}
         {enviando && <Cargando detalle="Estamos guardando tu cuenta y comprobando tu perfil." />}
@@ -282,7 +282,7 @@ export function Registro() {
       <hr className="my-6 border-borde-tarjeta" />
       <p className="text-left text-texto-suave">
         ¿Ya tienes cuenta?{' '}
-        <Link to="/ingresar" className="font-bold text-primario-oscuro underline underline-offset-4 hover:text-azul-texto">Iniciar sesión</Link>
+        <Link to="/ingresar" className="font-bold text-primario-oscuro underline underline-offset-4 hover:text-bosque">Iniciar sesión</Link>
       </p>
     </Tarjeta>
   </section>

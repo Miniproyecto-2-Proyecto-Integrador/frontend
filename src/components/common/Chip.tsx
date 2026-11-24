@@ -1,13 +1,13 @@
 import type { ReactNode } from 'react'
 
 const colores = {
-  azul: 'bg-azul-suave text-azul-texto',
-  rosa: 'bg-rosa-suave text-acento',
+  hoja: 'bg-hoja-suave text-bosque',
+  cafe: 'bg-arena text-acento',
 }
 
 export function Chip({
   icono,
-  color = 'azul',
+  color = 'hoja',
   children,
 }: {
   icono?: ReactNode

@@ -17,7 +17,7 @@ export function CopiarIdSala({ id }: { id: string }) {
   return <div>
     <p className="break-all text-texto-suave">ID: <span className="select-all">{id}</span></p>
     <Button variante="secundario" className="mt-3" onClick={() => void copiar()} aria-label={`Copiar ID de sala ${id}`}>Copiar ID</Button>
-    <p role="status" className="mt-2 text-sm text-azul-texto">{mensaje}</p>
+    <p role="status" className="mt-2 text-sm text-bosque">{mensaje}</p>
     {error && <p role="alert" className="mt-2 text-sm text-error">{error}</p>}
   </div>
 }

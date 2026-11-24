@@ -10,8 +10,8 @@ export function SelectorAvatar({ valor, onChange, error, disabled }: {
         <input className="peer sr-only" type="radio" name="avatar" value={`avatar${i + 1}`}
           checked={valor === `avatar${i + 1}`} onChange={e => onChange(e.target.value)} aria-invalid={error ? true : undefined}
           aria-describedby={error ? 'avatar-error' : undefined} />
-        <span className={`flex min-h-14 items-center justify-center rounded-xl border-2 border-borde bg-linear-to-br ${estilo} transition-[translate,box-shadow] duration-200 ease-out motion-safe:peer-enabled:group-hover:-translate-y-1 motion-safe:peer-enabled:peer-focus-visible:-translate-y-1 peer-enabled:group-hover:shadow-md motion-reduce:transition-none peer-checked:border-primario peer-checked:ring-2 peer-checked:ring-primario peer-focus-visible:outline-3 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-primario`}>
-          <span aria-hidden="true" className="text-2xl font-bold text-azul-texto">{i + 1}</span>
+        <span className={`flex min-h-14 items-center justify-center rounded-xl border-2 border-borde bg-linear-to-br ${estilo} transition-[translate,scale,box-shadow] duration-200 ease-(--ease-salida) motion-safe:peer-enabled:group-hover:-translate-y-0.5 motion-safe:peer-enabled:group-active:scale-[0.96] peer-enabled:group-hover:shadow-md motion-reduce:transition-none peer-checked:border-primario peer-checked:ring-2 peer-checked:ring-primario peer-focus-visible:outline-3 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-primario-oscuro`}>
+          <span aria-hidden="true" className="text-2xl font-bold text-bosque">{i + 1}</span>
         </span>
         <span className="mt-2 block">Avatar {i + 1}{valor === `avatar${i + 1}` ? ' ✓' : ''}</span>
       </label>)}

@@ -116,10 +116,10 @@ function FormularioPerfilGoogle({ usuario }: { usuario: User }) {
   if (estado === 'completo' && !ocupado) return <Navigate to="/dashboard" replace />
 
   return <section className="mx-auto max-w-2xl px-4 py-12">
-    <h1 ref={titulo} tabIndex={-1}>Completar perfil</h1>
+    <h1 ref={titulo} tabIndex={-1} className="entrada">Completar perfil</h1>
     <p className="mt-3 text-lg text-texto-suave">Elige tu nombre de usuario y confirma tus datos para acceder a tus salas.</p>
     <Tarjeta className="mt-6">
-      <div className="mb-6 rounded-xl bg-azul-claro p-4 text-azul-texto">
+      <div className="mb-6 rounded-2xl bg-hoja-claro p-4 text-bosque">
         <p className="font-bold">Cuenta de Google</p>
         {usuario.displayName && <p className="break-words">{usuario.displayName}</p>}
         <p className="break-all">{usuario.email ?? 'Google no proporcionó un correo electrónico.'}</p>

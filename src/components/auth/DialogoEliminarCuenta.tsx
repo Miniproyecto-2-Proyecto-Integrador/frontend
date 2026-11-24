@@ -17,7 +17,7 @@ export function DialogoEliminarCuenta({ ocupado, error, cancelar, confirmar }: {
   useEffect(() => { if (error) alerta.current?.focus() }, [error])
 
   return <dialog ref={dialogo} aria-labelledby="eliminar-cuenta-titulo" aria-describedby="eliminar-cuenta-detalle"
-    aria-busy={ocupado} className="m-auto w-[90vw] max-w-lg rounded-[28px] border border-borde-tarjeta bg-white p-6 text-texto shadow-xl backdrop:bg-slate-900/40"
+    aria-busy={ocupado} className="m-auto w-[90vw] max-w-lg rounded-3xl border border-borde-tarjeta bg-papel p-6 text-texto shadow-papel backdrop:bg-corteza/55"
     onCancel={evento => { evento.preventDefault(); if (!ocupado) cancelar() }}>
     <h2 id="eliminar-cuenta-titulo">¿Deseas eliminar tu cuenta?</h2>
     <div id="eliminar-cuenta-detalle">

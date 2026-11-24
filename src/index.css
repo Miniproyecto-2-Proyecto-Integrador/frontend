@@ -1,20 +1,28 @@
 @import "tailwindcss";
 
-/* Guía visual del equipo (documento de UX) */
+/* Guía visual del equipo: tertuliadero bajo un árbol (café, verde y papel).
+   Todos los pares de texto/fondo cumplen WCAG 2.2 AA (≥ 4.5:1; ≥ 3:1 en no textual). */
 @theme {
-  --color-primario: #2563eb;
-  --color-primario-oscuro: #1d4ed8;
-  --color-acento: #be185d;
-  --color-fondo: #fff7fa;
-  --color-rosa-suave: #fce7f3;
-  --color-azul-suave: #dbeafe;
-  --color-azul-claro: #eff6ff;
-  --color-lila-suave: #e9d5ff;
-  --color-azul-texto: #1e3a8a;
-  --color-texto: #1e293b;
-  --color-texto-suave: #475569;
-  --color-borde: #64748b;
-  --color-borde-tarjeta: #f9cfe3;
+  --color-primario: #2f5d3a;          /* verde bosque: acciones principales */
+  --color-primario-oscuro: #214529;
+  --color-acento: #7a4a26;            /* café tostado */
+  --color-corteza: #5b3a21;           /* tronco y madera */
+  --color-fondo: #f6f0e4;             /* papel crema */
+  --color-papel: #fffdf7;             /* superficie de tarjetas y campos */
+  --color-arena: #ecdfc6;
+  --color-lino: #e7e2c3;
+  --color-hoja-suave: #dcebd3;
+  --color-hoja-claro: #eef5e8;
+  --color-miel: #f0dca8;
+  --color-salvia: #cfe0c6;
+  --color-musgo: #d6dcab;
+  --color-terracota: #ecd0bd;
+  --color-bosque: #1f3d27;            /* verde muy oscuro para texto sobre hoja */
+  --color-texto: #2b2118;
+  --color-texto-suave: #5a4a3a;
+  --color-borde: #7a6a58;
+  --color-borde-tarjeta: #dccdae;
+  --color-deshabilitado: #e4d9c4;
   --color-error: #b91c1c;
   --color-error-fondo: #fef2f2;
   --color-exito: #166534;
@@ -22,15 +30,27 @@
   --color-aviso: #92400e;
   --color-aviso-fondo: #fffbeb;
 
-  --font-titulo: "Lexend", system-ui, sans-serif;
+  --font-titulo: "Nunito", system-ui, sans-serif;
   --font-texto: "Atkinson Hyperlegible", system-ui, sans-serif;
+
+  /* Curvas: exponential ease-out para entradas; nada arranca de scale(0). */
+  --ease-salida: cubic-bezier(0.23, 1, 0.32, 1);
+
+  --shadow-papel: 0 1px 2px rgb(91 58 33 / 0.08), 0 6px 16px -4px rgb(91 58 33 / 0.14), 0 18px 32px -12px rgb(91 58 33 / 0.12);
+  --shadow-boton: 0 1px 0 rgb(255 255 255 / 0.18) inset, 0 1px 2px rgb(33 69 41 / 0.3), 0 4px 10px -2px rgb(33 69 41 / 0.28);
 }
 
 @layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    scroll-padding-top: 5rem;
+    accent-color: var(--color-primario);
+  }
+
   body {
     font-family: var(--font-texto);
-    font-size: 1rem;
-    line-height: 1.5;
+    font-size: 1.0625rem;
+    line-height: 1.6;
     color: var(--color-texto);
     background: var(--color-fondo);
   }
@@ -39,44 +59,133 @@
   h2,
   h3 {
     font-family: var(--font-titulo);
-    font-weight: 700;
-    line-height: 1.25;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
   }
 
   h1 {
-    font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem);
+    font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
   }
   h2 {
-    font-size: clamp(1.375rem, 1.25rem + 0.5vw, 1.75rem);
+    font-size: clamp(1.4rem, 1.25rem + 0.6vw, 1.75rem);
   }
   h3 {
     font-size: 1.25rem;
   }
 
-}
-
-/* Flotación decorativa. Se desactiva con «reducir movimiento» */
-@keyframes flotar {
-  0%,
-  100% {
-    transform: translateY(0);
+  p,
+  li {
+    text-wrap: pretty;
   }
-  50% {
-    transform: translateY(-8px);
+
+  /* El navegador también lleva la identidad: selección, cursor de texto y barras. */
+  ::selection {
+    background: var(--color-hoja-suave);
+    color: var(--color-bosque);
+  }
+  input {
+    caret-color: var(--color-primario);
+  }
+  * {
+    scrollbar-color: #a98f6e var(--color-fondo);
+  }
+
+  /* Foco visible y nunca oculto: contorno grueso con separación, legible sobre crema, verde y café (WCAG 2.4.7 y 2.4.11). */
+  :focus-visible {
+    outline: 3px solid var(--color-primario-oscuro);
+    outline-offset: 3px;
   }
 }
 
-.flotar {
-  animation: flotar 6s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .flotar {
-    animation: none;
+@layer components {
+  /* Números que cambian no mueven el diseño. */
+  .numeros {
+    font-variant-numeric: tabular-nums;
   }
 }
 
-:focus-visible {
-  outline: 3px solid var(--color-primario);
-  outline-offset: 2px;
+/* ---------- Movimiento ----------
+   Todo el movimiento vive aquí y solo se define si la persona NO pidió reducirlo:
+   con «reducir movimiento» el estado final es el estado por defecto (nada queda oculto).
+   Solo se animan transform y opacity. El movimiento nunca es el único canal de información. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes entrar {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes aparecer {
+    from { opacity: 0; transform: translateY(6px) scale(0.98); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes crecer {
+    from { opacity: 0; transform: scale(0.94); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes colgar {
+    from { opacity: 0; transform: translateY(-14px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes balanceo {
+    from { transform: rotate(-1.6deg); }
+    to   { transform: rotate(1.6deg); }
+  }
+  @keyframes brisa {
+    from { transform: rotate(-0.8deg); }
+    to   { transform: rotate(0.9deg); }
+  }
+  @keyframes caer-hoja {
+    0%   { opacity: 0; transform: translate(0, -10px) rotate(0deg); }
+    12%  { opacity: 1; }
+    50%  { transform: translate(-26px, 150px) rotate(140deg); }
+    88%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(14px, 300px) rotate(290deg); }
+  }
+  @keyframes vapor {
+    0%   { opacity: 0; transform: translateY(4px) scaleY(0.9); }
+    35%  { opacity: 0.75; }
+    100% { opacity: 0; transform: translateY(-14px) scaleY(1.1); }
+  }
+  @keyframes latido {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50%      { transform: scale(1.35); opacity: 0.55; }
+  }
+  @keyframes dialogo-entra {
+    from { opacity: 0; transform: translateY(8px) scale(0.96); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes velo-entra {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes trazar {
+    from { stroke-dashoffset: 1; }
+    to   { stroke-dashoffset: 0; }
+  }
+  @keyframes brotar {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* Entrada escalonada: --d es el retraso (ms). Se usa una vez por pantalla, no en acciones frecuentes. */
+  .entrada     { animation: entrar 480ms var(--ease-salida) both; animation-delay: var(--d, 0ms); }
+  .aparecer    { animation: aparecer 320ms var(--ease-salida) both; animation-delay: var(--d, 0ms); }
+  .crecer      { animation: crecer 900ms var(--ease-salida) both; animation-delay: var(--d, 0ms); transform-origin: 50% 100%; }
+  .colgar      { animation: colgar 560ms var(--ease-salida) both; animation-delay: var(--d, 0ms); }
+  .balanceo    { animation: balanceo var(--t, 5.5s) ease-in-out var(--d, 0s) infinite alternate; transform-origin: 50% 0; }
+  .brisa       { animation: brisa var(--t, 7s) ease-in-out var(--d, 0s) infinite alternate; transform-box: fill-box; transform-origin: 50% 100%; }
+  .hoja-cae    { animation: caer-hoja var(--t, 12s) linear var(--d, 0s) infinite; }
+  .vapor       { animation: vapor 3.2s ease-out var(--d, 0s) infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+  .latido      { animation: latido 2.4s ease-in-out infinite; }
+  .trazo       { stroke-dasharray: 1; animation: trazar 900ms var(--ease-salida) var(--d, 500ms) both; }
+  .brotar      { animation: brotar 260ms var(--ease-salida) both; }
+
+  dialog[open] { animation: dialogo-entra 220ms var(--ease-salida); }
+  dialog[open]::backdrop { animation: velo-entra 220ms ease-out; }
+}
+
+/* Fondo decorativo: nunca recibe foco ni lleva texto. */
+.fondo-hojas path {
+  vector-effect: non-scaling-stroke;
 }

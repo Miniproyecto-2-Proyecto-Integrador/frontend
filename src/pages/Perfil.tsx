@@ -62,7 +62,7 @@ function EditorPerfil({ inicial }: { inicial: DatosGuardados }) {
     } finally { bloqueo.current = false }
   }
   return <section className="mx-auto max-w-4xl space-y-6 px-4 py-10">
-    <div><h1>Mi perfil</h1><p className="mt-2 text-texto-suave">Tus datos, a tu manera. Actualízalos cuando quieras.</p></div>
+    <div className="entrada"><h1>Mi perfil</h1><p className="mt-2 text-texto-suave">Tus datos, a tu manera. Actualízalos cuando quieras.</p></div>
     {aviso && <MensajeExito>{aviso}</MensajeExito>}
     <Tarjeta>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">

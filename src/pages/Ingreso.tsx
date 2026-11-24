@@ -75,7 +75,7 @@ export function Ingreso() {
   }
 
   return <section className="mx-auto max-w-xl px-4 py-12">
-    <h1 ref={titulo} tabIndex={-1} className="text-center">Iniciar sesión</h1>
+    <h1 ref={titulo} tabIndex={-1} className="entrada text-center">Iniciar sesión</h1>
     <p className="mt-3 text-center text-lg text-texto-suave">Accede con tu correo y contraseña o continúa con Google.</p>
     {location.state?.correoActualizado === true && <div className="mt-6"><MensajeExito>Tu perfil se guardó. Inicia sesión de nuevo con tu correo actualizado.</MensajeExito></div>}
     <Tarjeta className="mt-6">
@@ -87,7 +87,7 @@ export function Ingreso() {
           value={datos.password} error={errores.password} disabled={ocupado}
           onChange={e => dispatch({ tipo: 'editar', campo: 'password', valor: e.target.value })}>
           <button type="button" aria-controls="password" aria-pressed={visible} aria-label={visible ? 'Ocultar contraseña' : 'Mostrar contraseña'} disabled={ocupado}
-            onClick={() => setVisible(actual => !actual)} className="absolute inset-y-0 right-1 inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl px-3 text-azul-texto">{visible ? <Eye aria-hidden="true" size={20} /> : <EyeOff aria-hidden="true" size={20} />}</button>
+            onClick={() => setVisible(actual => !actual)} className="absolute inset-y-0 right-1 inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl px-3 text-bosque">{visible ? <Eye aria-hidden="true" size={20} /> : <EyeOff aria-hidden="true" size={20} />}</button>
         </CampoFormulario>
         {estado === 'error' && <div ref={alerta} tabIndex={-1} role="alert" className="rounded-xl bg-error-fondo p-4 text-error">
           <p>{error}</p>
@@ -104,7 +104,7 @@ export function Ingreso() {
       <hr className="my-6 border-borde-tarjeta" />
       <p className="text-left text-texto-suave">
         ¿Todavía no tienes cuenta?{' '}
-        <Link to="/registro" state={{ from: destino }} className="font-bold text-primario-oscuro underline underline-offset-4 hover:text-azul-texto">Crear cuenta</Link>
+        <Link to="/registro" state={{ from: destino }} className="font-bold text-primario-oscuro underline underline-offset-4 hover:text-bosque">Crear cuenta</Link>
       </p>
     </Tarjeta>
   </section>
