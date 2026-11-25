@@ -1,5 +1,5 @@
 import { ArrowDown, History } from 'lucide-react'
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { HistorialChat } from '../../hooks/useHistorialChat'
 import { formatearMomento } from '../../services/chat'
 import type { Mensaje } from '../../types/chat'
@@ -45,6 +45,20 @@ export function ListaMensajes({ mensajes, historial }: { mensajes: Mensaje[]; hi
     primeroPrevio.current = primero
     alturaPrevia.current = caja.scrollHeight
   }, [mensajes, ultimo?.esPropio])
+
+  // El panel puede estar oculto (celular) o cambiar de alto (teclado en pantalla): si estabas al final, te quedas al final.
+  useEffect(() => {
+    const caja = contenedor.current
+    if (!caja || typeof ResizeObserver === 'undefined') return
+    let alto = caja.clientHeight
+    const observador = new ResizeObserver(() => {
+      if (caja.clientHeight === alto) return
+      alto = caja.clientHeight
+      if (alFinal.current) caja.scrollTop = caja.scrollHeight
+    })
+    observador.observe(caja)
+    return () => observador.disconnect()
+  }, [])
 
   function alDesplazar() {
     const caja = contenedor.current

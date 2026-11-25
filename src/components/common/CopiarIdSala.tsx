@@ -25,8 +25,8 @@ export function CopiarIdSala({ id, variante = 'normal' }: { id: string; variante
   </div>
 
   return <div>
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-      <p className="break-all text-texto-suave">ID: <span className="numeros select-all font-bold text-texto">{id}</span></p>
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 sm:gap-y-2">
+      <p className="break-all text-sm text-texto-suave sm:text-base">ID: <span className="numeros select-all font-bold text-texto">{id}</span></p>
       <Button variante="secundario" onClick={() => void copiar()} aria-label={`Copiar ID de sala ${id}`}>
         <Copy aria-hidden="true" size={18} /> Copiar ID
       </Button>
