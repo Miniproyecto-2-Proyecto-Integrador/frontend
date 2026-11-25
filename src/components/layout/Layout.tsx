@@ -64,7 +64,7 @@ export function Layout() {
   }
 
   return (
-    <div className="relative isolate flex min-h-screen flex-col">
+    <div className="relative isolate flex min-h-dvh flex-col">
       <SkipLink />
 
       {!enSala && <FondoNaturaleza />}
@@ -100,7 +100,6 @@ export function Layout() {
           </p>
           <nav aria-label="Pie de página">
             <ul className="flex flex-wrap gap-x-6">
-              <li><Link to="/ayuda" className="inline-flex min-h-11 items-center font-bold underline underline-offset-4 decoration-1 transition-[text-decoration-thickness] hover:decoration-2 focus-visible:outline-papel">Ayuda</Link></li>
               <li><Link to="/accesibilidad" className="inline-flex min-h-11 items-center font-bold underline underline-offset-4 decoration-1 transition-[text-decoration-thickness] hover:decoration-2 focus-visible:outline-papel">Accesibilidad</Link></li>
             </ul>
           </nav>

@@ -47,7 +47,7 @@ export function FormularioMensaje({ enviar }: { enviar: (texto: string) => Promi
         <SendHorizontal aria-hidden="true" size={20} /><span className="sr-only">{enviando ? 'Enviando…' : 'Enviar'}</span>
       </Button>
     </div>
-    <p id="mensaje-chat-ayuda" className="mt-2 px-1 text-sm text-texto-suave">Enter envía el mensaje. Mayús + Enter agrega una línea nueva.</p>
+    <p id="mensaje-chat-ayuda" className="mt-2 px-1 text-sm text-texto-suave max-sm:sr-only">Enter envía el mensaje. Mayús + Enter agrega una línea nueva.</p>
     <p id="mensaje-chat-error" role="alert" className={error ? 'mt-2 px-1 font-bold text-error' : 'sr-only'}>{error}</p>
   </form>
 }

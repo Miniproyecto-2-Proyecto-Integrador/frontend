@@ -30,7 +30,7 @@ function SalaAbierta({ id }: { id: string | undefined }) {
   // 400 (ID inválido) y 404 (no existe) no mejoran al reintentar: se explican y se ofrece volver.
   const sinReintento = status === 400 || status === 404
   const navegar = useNavigate()
-  // Solo para pantallas chicas: el chat es una hoja que se abre desde la barra inferior (en pantallas grandes siempre se ve).
+  // Solo para pantallas chicas: el chat se abre desde la barra inferior y comparte la pantalla con los participantes (en pantallas grandes siempre se ve).
   const [chatAbierto, setChatAbierto] = useState(false)
   const [cambio, setCambio] = useState<{ id: string; nombre: string } | null>(null)
   const esAnfitrion = sala?.rol === 'administrador'
@@ -57,38 +57,40 @@ function SalaAbierta({ id }: { id: string | undefined }) {
           : <MensajeError mensaje={error} onReintentar={reintentar} />}</div></>}
     </section>
   }
-  return <section className="zona-oscura relative isolate flex h-dvh min-h-[34rem] flex-col gap-3 overflow-hidden bg-cafesito p-3 text-papel sm:p-4">
+  // Celular: la sala se reparte en cuatro franjas que nunca se tapan entre sí (encabezado, participantes, chat y controles).
+  // Con el chat cerrado los participantes llenan la pantalla; con el chat abierto pasan a una tira arriba y el chat ocupa el resto.
+  return <section className="zona-oscura relative isolate flex h-dvh flex-col gap-2 overflow-hidden bg-cafesito p-2 text-papel sm:gap-3 sm:p-4">
     <FondoSala />
-    <header className="zona-clara flex flex-wrap items-center justify-between gap-x-6 gap-y-3 rounded-2xl bg-papel px-4 py-3 text-texto shadow-papel">
+    <header className="zona-clara flex flex-wrap items-center justify-between gap-x-6 gap-y-2 rounded-2xl bg-papel px-3 py-2 text-texto shadow-papel sm:px-4 sm:py-3">
       <div className="min-w-0">
-        <h1 className="entrada break-words text-[clamp(1.35rem,1.1rem+0.9vw,1.9rem)]">{nombre}</h1>
-        <p className="text-texto-suave">{esAnfitrion ? 'Eres administrador de esta sala.' : 'Estás en esta sala como participante.'}</p>
+        <h1 className="entrada break-words text-[clamp(1.2rem,1.05rem+0.9vw,1.9rem)]">{nombre}</h1>
+        <p className="text-sm text-texto-suave sm:text-base [@media(max-height:34rem)]:hidden">{esAnfitrion ? 'Eres administrador de esta sala.' : 'Estás en esta sala como participante.'}</p>
       </div>
-      <div className="min-w-0">
-        <h2 className="text-base">{esAnfitrion ? 'Comparte tu sala' : 'ID de la sala'}</h2>
+      <div className={`min-w-0 ${chatAbierto ? 'max-lg:hidden' : ''}`}>
+        <h2 className="text-base max-sm:sr-only">{esAnfitrion ? 'Comparte tu sala' : 'ID de la sala'}</h2>
         <p className="sr-only">{esAnfitrion ? 'Copia el ID para compartirlo con tus compañeros.' : 'Puedes copiar el ID para invitar a otras personas.'}</p>
         <CopiarIdSala id={sala.id} variante="compacto" />
       </div>
     </header>
     {conexion === 'sin-conexion' && <MensajeAviso>{mensajeConexion} Si te pierdes un cambio de la sala, recarga la página.</MensajeAviso>}
     <AnunciosSala anuncios={anuncios} />
-    <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[minmax(0,1fr)_24rem] xl:grid-cols-[minmax(0,1fr)_26rem]">
-      <div className="min-h-0 overflow-y-auto rounded-3xl border border-papel/15 bg-cafe-oscuro p-3 shadow-papel sm:p-4">
-        <ListaParticipantes participantes={participantes} estado={conexion} miNombre={perfil?.username} miAvatar={perfil?.avatar} />
+    <div className={`grid min-h-0 flex-1 gap-2 sm:gap-3 lg:grid-cols-[minmax(0,1fr)_24rem] xl:grid-cols-[minmax(0,1fr)_26rem] ${chatAbierto ? 'max-lg:grid-rows-[auto_minmax(0,1fr)]' : 'max-lg:grid-rows-[minmax(0,1fr)]'}`}>
+      <div className={`min-h-0 overflow-y-auto rounded-3xl border border-papel/15 bg-cafe-oscuro p-3 shadow-papel sm:p-4 ${chatAbierto ? 'max-lg:p-2' : ''}`}>
+        <ListaParticipantes participantes={participantes} estado={conexion} miNombre={perfil?.username} miAvatar={perfil?.avatar} compacto={chatAbierto} />
       </div>
-      <div id="panel-chat" className={`zona-clara max-lg:fixed max-lg:inset-x-3 max-lg:top-20 max-lg:bottom-36 max-lg:z-30 max-lg:transition-[opacity,translate,visibility] max-lg:duration-200 max-lg:ease-out motion-reduce:transition-none lg:min-h-0 ${chatAbierto ? '' : 'max-lg:invisible max-lg:translate-y-4 max-lg:opacity-0'}`}>
+      <div id="panel-chat" className={`zona-clara min-h-0 ${chatAbierto ? '' : 'max-lg:hidden'}`}>
         <ChatSala mensajes={mensajes} estado={conexion} enviar={enviarMensaje} historial={historial} />
       </div>
     </div>
-    <div role="group" aria-label="Controles de la sala" className="zona-clara mx-auto flex w-fit max-w-full flex-wrap items-center justify-center gap-3 rounded-2xl bg-papel p-2 text-texto shadow-papel">
-      <Button variante="secundario" className="lg:hidden" aria-expanded={chatAbierto} aria-controls="panel-chat" onClick={() => setChatAbierto(abierto => !abierto)}>
-        <MessagesSquare aria-hidden="true" size={20} />{chatAbierto ? 'Ocultar chat' : 'Mostrar chat'}
+    <div role="group" aria-label="Controles de la sala" className="zona-clara mx-auto flex w-full items-center justify-center gap-2 rounded-2xl bg-papel p-2 text-texto shadow-papel sm:w-fit sm:gap-3">
+      <Button variante="secundario" className="min-w-0 flex-1 px-3 aria-expanded:bg-hoja-claro sm:flex-none sm:px-6 lg:hidden" aria-expanded={chatAbierto} aria-controls="panel-chat" onClick={() => setChatAbierto(abierto => !abierto)}>
+        <MessagesSquare aria-hidden="true" size={20} className="shrink-0" /><span className="max-sm:sr-only">{chatAbierto ? 'Ocultar ' : 'Mostrar '}</span><span className="max-sm:first-letter:uppercase">chat</span>
       </Button>
-      {esAnfitrion && <details className="relative">
-        <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-xl border-2 border-primario bg-papel px-6 py-2 text-base font-bold text-primario transition-[background-color] duration-200 hover:bg-hoja-claro motion-reduce:transition-none [&::-webkit-details-marker]:hidden">
-          <Settings aria-hidden="true" size={18} /> Administrar sala
+      {esAnfitrion && <details className="relative min-w-0 flex-1 sm:flex-none">
+        <summary className="flex min-h-11 w-full cursor-pointer list-none items-center justify-center gap-2 rounded-xl border-2 border-primario bg-papel px-3 py-2 text-base font-bold text-primario transition-[background-color] duration-200 hover:bg-hoja-claro motion-reduce:transition-none sm:inline-flex sm:w-auto sm:px-6 [&::-webkit-details-marker]:hidden">
+          <Settings aria-hidden="true" size={18} className="shrink-0" />Administrar<span className="max-sm:sr-only"> sala</span>
         </summary>
-        <div className="zona-clara z-40 text-texto max-lg:fixed max-lg:inset-x-4 max-lg:bottom-36 max-lg:max-h-[70dvh] max-lg:overflow-y-auto lg:absolute lg:bottom-full lg:left-1/2 lg:mb-3 lg:w-[24rem] lg:-translate-x-1/2">
+        <div className="zona-clara z-40 text-texto max-lg:fixed max-lg:inset-x-3 max-lg:bottom-24 max-lg:max-h-[calc(100dvh-8rem)] max-lg:overflow-y-auto lg:absolute lg:bottom-full lg:left-1/2 lg:mb-3 lg:w-[24rem] lg:-translate-x-1/2">
           <AdministrarSala id={sala.id} nombre={nombre}
             alActualizar={nuevo => setCambio({ id: sala.id, nombre: nuevo })}
             alEliminar={volverAlPanelPorEliminacion} />

@@ -2,7 +2,7 @@
 // Es solo decoración: oculto a lectores de pantalla, sin foco, sin movimiento y con tan poco contraste que no afecta al texto.
 export function FondoSala() {
   return (
-    <svg aria-hidden="true" focusable="false" className="pointer-events-none absolute inset-0 size-full text-fondo/[0.13]">
+    <svg aria-hidden="true" focusable="false" className="pointer-events-none absolute inset-0 -z-10 size-full text-fondo/[0.13]">
       <defs>
         <pattern id="doodles-sala" width="180" height="180" viewBox="0 0 220 220" patternUnits="userSpaceOnUse">
           <g fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
